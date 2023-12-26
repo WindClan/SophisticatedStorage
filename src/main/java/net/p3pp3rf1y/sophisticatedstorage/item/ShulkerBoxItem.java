@@ -105,7 +105,7 @@ public class ShulkerBoxItem extends StorageBlockItem implements IStashStorageIte
 				wrapper.setContentsUuid(UUID.randomUUID());
 			}
 			try (Transaction ctx = Transaction.openOuter()) {
-				long inserted = wrapper.getInventoryForUpgradeProcessing().insert(ItemVariant.of(stack), stack.getCount(), null);
+				long inserted = wrapper.getInventoryForUpgradeProcessing().insert(ItemVariant.of(stack), stack.getCount(), ctx);
 				ctx.commit();
 				return stack.copyWithCount(stack.getCount() - (int) inserted);
 			}
