@@ -140,6 +140,10 @@ def compat(DependencyHandler deps) {
     deps.modImplementation("maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}")
     deps.modImplementation("maven.modrinth:indium:${indium_version}+mc${minecraft_version}")
     deps.modImplementation("curse.maven:jade-324717:${jade_id}")
+
+    deps.modImplementation("curse.maven:malilib-303119:$malilib_cf_file_id")
+    deps.modImplementation("curse.maven:litematica-308892:$litematica_cf_file_id")
+
     /*compileOnly fg.deobf("curse.maven:chipped-456956:${chipped_cf_file_id}")
     runtimeOnly fg.deobf("curse.maven:chipped-456956:${chipped_cf_file_id}")
     compileOnly fg.deobf("curse.maven:athena-841890:${athena_cf_file_id}")

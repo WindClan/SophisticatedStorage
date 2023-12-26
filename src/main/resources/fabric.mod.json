@@ -34,7 +34,10 @@
             "net.p3pp3rf1y.sophisticatedstorage.compat.jade.StorageJadePlugin"
         ]
     },
-    "mixins": ["sophisticatedstorage.mixins.json"],
+    "mixins": [
+        "sophisticatedstorage.mixins.json",
+        "compat/sophisticatedstorage.litematica.mixins.json"
+    ],
     "accessWidener": "sophisticatedstorage.accesswidener",
     "depends": {
         "fabricloader": ">=${loader_version}",
