@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
@@ -179,24 +180,17 @@ public class HopperUpgradeWrapper extends UpgradeWrapperBase<HopperUpgradeWrappe
 	}
 
 	private boolean moveItems(Storage<ItemVariant> fromHandler, Storage<ItemVariant> toHandler, FilterLogic filterLogic) {
-		try (Transaction iteration = Transaction.openOuter()) {
-			for (StorageView<ItemVariant> view : fromHandler.nonEmptyViews()) {
-				ItemVariant resource = view.getResource();
-				ItemStack slotStack = resource.toStack((int) view.getAmount());
-				if (!slotStack.isEmpty() && filterLogic.matchesFilter(slotStack)) {
-					long maxExtracted;
-					try (Transaction extractionTestTransaction = iteration.openNested()) {
-						maxExtracted = fromHandler.extract(resource, upgradeItem.getMaxTransferStackSize(), extractionTestTransaction);
-						extractionTestTransaction.abort();
-					}
+		for (StorageView<ItemVariant> view : fromHandler.nonEmptyViews()) {
+			ItemVariant resource = view.getResource();
+			ItemStack slotStack = resource.toStack((int) view.getAmount());
+			if (!slotStack.isEmpty() && filterLogic.matchesFilter(slotStack)) {
+				long maxExtracted = StorageUtil.simulateExtract(view, resource, upgradeItem.getMaxTransferStackSize(), null);
 
-					try (Transaction transferTransaction = iteration.openNested()) {
-						long accepted = toHandler.insert(resource, maxExtracted, transferTransaction);
-						if (fromHandler.extract(resource, accepted, transferTransaction) == accepted) {
-							transferTransaction.commit();
-							iteration.commit();
-							return true;
-						}
+				try (Transaction transferTransaction = Transaction.openOuter()) {
+					long accepted = toHandler.insert(resource, maxExtracted, transferTransaction);
+					if (fromHandler.extract(resource, accepted, transferTransaction) == accepted) {
+						transferTransaction.commit();
+						return true;
 					}
 				}
 			}
