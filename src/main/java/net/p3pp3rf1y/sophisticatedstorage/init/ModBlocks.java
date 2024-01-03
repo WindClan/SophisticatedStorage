@@ -212,7 +212,6 @@ public class ModBlocks {
 
 	private static final String CONTROLLER_REG_NAME = "controller";
 	public static final ControllerBlock CONTROLLER = register(CONTROLLER_REG_NAME, ControllerBlock::new);
-
 	public static final BlockItemBase CONTROLLER_ITEM = registerItem(CONTROLLER_REG_NAME, () -> new BlockItemBase(CONTROLLER, new Properties()));
 
 	private static final String STORAGE_LINK_REG_NAME = "storage_link";
@@ -314,69 +313,10 @@ public class ModBlocks {
 		return Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, SophisticatedStorage.getRL(id), supplier.get());
 	}
 
-/*	private static void registerItemGroup() {
-		ItemGroupEvents.modifyEntriesEvent(ModItems.CREATIVE_TAB).register(entries -> {
-			BLOCKS.values().forEach(block -> {
-				if (block instanceof WoodStorageBlockBase) {
-					CUSTOM_TEXTURE_WOOD_TYPES.keySet().forEach(woodType -> entries.accept(WoodStorageBlockItem.setWoodType(new ItemStack(block), woodType)));
-
-					var isBasicTier = block == BARREL || block == CHEST
-							|| block == LIMITED_BARREL_1 || block == LIMITED_BARREL_2
-							|| block == LIMITED_BARREL_3 || block == LIMITED_BARREL_4;
-
-					if (isBasicTier || Boolean.TRUE.equals(Config.CLIENT.showHigherTierTintedVariants.get())) {
-						for (DyeColor color : DyeColor.values()) {
-							ItemStack storageStack = new ItemStack(block);
-							if (storageStack.getItem() instanceof ITintableBlockItem tintableBlockItem) {
-								tintableBlockItem.setMainColor(storageStack, ColorHelper.getColor(color.getTextureDiffuseColors()));
-								tintableBlockItem.setAccentColor(storageStack, ColorHelper.getColor(color.getTextureDiffuseColors()));
-							}
-							entries.accept(storageStack);
-						}
-						ItemStack storageStack = new ItemStack(block);
-						if (storageStack.getItem() instanceof ITintableBlockItem tintableBlockItem) {
-							tintableBlockItem.setMainColor(storageStack, ColorHelper.getColor(DyeColor.YELLOW.getTextureDiffuseColors()));
-							tintableBlockItem.setAccentColor(storageStack, ColorHelper.getColor(DyeColor.LIME.getTextureDiffuseColors()));
-						}
-						entries.accept(storageStack);
-					}
-
-					if (block == BARREL) {
-						ItemStack flatBarrel = WoodStorageBlockItem.setWoodType(new ItemStack(block), WoodType.ACACIA);
-						BarrelBlockItem.toggleFlatTop(flatBarrel);
-						entries.accept(flatBarrel);
-					}
-				}
-				else if (block instanceof ShulkerBoxBlock shulkerBoxBlock) {
-					if (block == SHULKER_BOX || Boolean.TRUE.equals(Config.CLIENT.showHigherTierTintedVariants.get())) {
-						for (DyeColor color : DyeColor.values()) {
-							ItemStack storageStack = shulkerBoxBlock.getTintedStack(color);
-							entries.accept(storageStack);
-						}
-						ItemStack storageStack = new ItemStack(block);
-						if (storageStack.getItem() instanceof ITintableBlockItem tintableBlockItem) {
-							tintableBlockItem.setMainColor(storageStack, ColorHelper.getColor(DyeColor.YELLOW.getTextureDiffuseColors()));
-							tintableBlockItem.setAccentColor(storageStack, ColorHelper.getColor(DyeColor.LIME.getTextureDiffuseColors()));
-						}
-						entries.accept(storageStack);
-					}
-				}
-			});
-
-			ITEMS.values().forEach(item -> {
-				if (item instanceof WoodStorageBlockItem || item instanceof ShulkerBoxItem) {
-					entries.accept(item);
-				}
-			});
-		});
-	}*/
-
-
 	public static void register() {
 		registerContainers();
 		registerDispenseBehavior();
 		registerCauldronInteractions();
-//		registerItemGroup();
 
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleIdentifiablePrepareableReloadListener<>(SophisticatedStorage.getRL("recipes")) {
 			@Override
