@@ -27,11 +27,20 @@
         "fabric-datagen": [
             "net.p3pp3rf1y.sophisticatedstorage.data.DataGenerators"
         ],
+        "jade": [
+            "net.p3pp3rf1y.sophisticatedstorage.compat.jade.StorageJadePlugin"
+        ],
+        "emi": [
+            "net.p3pp3rf1y.sophisticatedstorage.compat.emi.EmiCompat"
+        ],
         "jei_mod_plugin": [
             "net.p3pp3rf1y.sophisticatedstorage.compat.jei.StoragePlugin"
         ],
-        "jade": [
-            "net.p3pp3rf1y.sophisticatedstorage.compat.jade.StorageJadePlugin"
+        "rei_common": [
+            "net.p3pp3rf1y.sophisticatedstorage.compat.rei.REICompat"
+        ],
+        "rei_client": [
+            "net.p3pp3rf1y.sophisticatedstorage.compat.rei.REIClientCompat"
         ]
     },
     "mixins": [
