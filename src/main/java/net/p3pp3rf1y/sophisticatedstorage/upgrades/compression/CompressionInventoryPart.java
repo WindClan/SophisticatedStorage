@@ -3,6 +3,7 @@ package net.p3pp3rf1y.sophisticatedstorage.upgrades.compression;
 import com.mojang.datafixers.util.Function4;
 import com.mojang.datafixers.util.Pair;
 
+import io.github.fabricators_of_create.porting_lib.transfer.callbacks.TransactionCallback;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
@@ -16,7 +17,6 @@ import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
 import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryPartitioner;
 import net.p3pp3rf1y.sophisticatedcore.settings.memory.MemorySettingsCategory;
 import net.p3pp3rf1y.sophisticatedcore.util.RecipeHelper;
-import net.p3pp3rf1y.sophisticatedcore.util.TransactionCallback;
 import net.p3pp3rf1y.sophisticatedstorage.Config;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
 
@@ -459,9 +459,7 @@ public class CompressionInventoryPart implements IInventoryPartHandler {
 			return 0;
 		}
 
-
 		Map<Integer, SlotDefinition> definitions = slotDefinitions;
-
 		if (definitions.isEmpty()) {
 			definitions = getSlotDefinitions(resource.getItem(), slot, Map.of());
 		}

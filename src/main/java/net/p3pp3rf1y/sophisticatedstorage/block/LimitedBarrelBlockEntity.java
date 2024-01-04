@@ -2,6 +2,7 @@ package net.p3pp3rf1y.sophisticatedstorage.block;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -148,44 +148,53 @@ public class LimitedBarrelBlockEntity extends BarrelBlockEntity implements ICoun
 			return depositFromAllOfPlayersInventory(player, slot, invHandler, stackInSlot, memorySettings);
 		}
 
+		SingleSlotStorage<ItemVariant> handSlot = PlayerInventoryStorage.of(player).getHandSlot(hand);
+		ItemVariant resource = handSlot.getResource();
 		try (Transaction ctx = Transaction.openOuter()) {
-			long inserted = invHandler.insertItemOnlyToSlot(slot, ItemVariant.of(stackInHand), stackInHand.getCount(), ctx);
-			if (inserted > 0) {
-				if (isLocked()) {
-					memorySettings.selectSlot(slot);
+			long simulatedInsert;
+			try (Transaction simulate = Transaction.openNested(ctx)) {
+				simulatedInsert = invHandler.insertItemOnlyToSlot(slot, resource, handSlot.getAmount(), simulate);
+			}
+			if (simulatedInsert > 0) {
+				long extracted = handSlot.extract(resource, simulatedInsert, ctx);
+				if (extracted > 0) {
+					invHandler.insertItemOnlyToSlot(slot, resource, extracted, ctx);
+					if (isLocked()) {
+						memorySettings.selectSlot(slot);
+					}
+
+					ctx.commit();
+					return true;
 				}
-				player.setItemInHand(hand, stackInHand.copyWithCount(stackInHand.getCount() - (int) inserted));
-				ctx.commit();
-				return true;
 			}
 		}
 		return false;
 	}
 
 	private boolean depositFromAllOfPlayersInventory(Player player, int slot, InventoryHandler invHandler, ItemStack stackInSlot, MemorySettingsCategory memorySettings) {
-		AtomicBoolean success = new AtomicBoolean(false);
+		boolean success = false;
 		Predicate<ItemStack> memoryItemMatches = itemStack -> memorySettings.isSlotSelected(slot) && memorySettings.matchesFilter(slot, itemStack);
 		PlayerInventoryStorage playerInventory = PlayerInventoryStorage.of(player);
 		for (var view : playerInventory.nonEmptyViews()) {
 			ItemVariant resource = view.getResource();
 			if ((stackInSlot.isEmpty() && (memoryItemMatches.test(resource.toStack()) || invHandler.isFilterItem(resource.getItem())) || (!resource.isBlank() && ItemStackHelper.canItemStacksStack(stackInSlot, resource.toStack((int) view.getAmount()))))) {
-				long inserted;
 				try (Transaction ctx = Transaction.openOuter()) {
-					inserted = invHandler.insertItemOnlyToSlot(slot, resource, view.getAmount(), ctx);
-				}
-				if (inserted < view.getAmount()) {
-					try (Transaction ctx = Transaction.openOuter()) {
-						long extracted = view.extract(resource, view.getAmount() - inserted, ctx);
+					long simulatedInsert;
+					try (Transaction simulate = Transaction.openNested(ctx)) {
+						simulatedInsert = invHandler.insertItemOnlyToSlot(slot, resource, view.getAmount(), simulate);
+					}
+					if (simulatedInsert > 0) {
+						long extracted = view.extract(resource, simulatedInsert, ctx);
 						if (extracted > 0) {
 							invHandler.insertItemOnlyToSlot(slot, resource, extracted, ctx);
+							success = true;
 							ctx.commit();
-							success.set(true);
 						}
 					}
 				}
 			}
 		}
-		return success.get();
+		return success;
 	}
 
 	boolean tryToTakeItem(Player player, int slot) {
