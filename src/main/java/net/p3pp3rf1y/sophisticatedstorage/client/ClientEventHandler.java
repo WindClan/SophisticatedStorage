@@ -179,7 +179,10 @@ public class ClientEventHandler {
 			} else {
 				if (player.getDestroySpeed(state) < 2) {
 					Minecraft.getInstance().gameMode.destroyDelay = 5;
-					return InteractionResult.FAIL;
+					// Necessary cause fabrics version does stop the attack from happening
+					// and there is no full equivalent to forges event
+					state.getBlock().attack(state, level, pos, player);
+					return InteractionResult.SUCCESS;
 				}
 			}
 		}
