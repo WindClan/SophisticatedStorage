@@ -4,7 +4,6 @@ import com.mojang.math.Axis;
 import org.joml.Vector3f;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -237,9 +236,9 @@ public abstract class StorageBlockBase extends BlockBase implements IStorageBloc
 		if (isStorageUpgrade(itemInHand)) {
 			UpgradeHandler upgradeHandler = b.getStorageWrapper().getUpgradeHandler();
 			ItemVariant resource = ItemVariant.of(itemInHand);
-			if (StorageUtil.simulateInsert(upgradeHandler, resource, itemInHand.getCount(), null) > 0) {
+			if (InventoryHelper.simulateInsertIntoInventory(upgradeHandler, resource,1, null).getCount() != itemInHand.getCount()) {
 				try (Transaction ctx = Transaction.openOuter()) {
-					upgradeHandler.insert(resource, 1, ctx);
+					InventoryHelper.insertIntoInventory(upgradeHandler, resource, 1, ctx);
 					ctx.commit();
 				}
 				itemInHand.shrink(1);

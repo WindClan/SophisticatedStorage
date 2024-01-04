@@ -45,7 +45,6 @@ public class CompressionUpgradeItem extends UpgradeItemBase<CompressionUpgradeIt
 		}
 
 		Optional<InventoryPartitioner.SlotRange> slotRange = storageWrapper.getInventoryHandler().getInventoryPartitioner().getFirstSpace(Config.SERVER.compressionUpgrade.maxNumberOfSlots.get());
-
 		return slotRange.map(range -> canUseForCompression(storageWrapper, range))
 				.orElseGet(() -> new UpgradeSlotChangeResult.Fail(StorageTranslationHelper.INSTANCE.translError("add.compression_no_space"), Collections.emptySet(), Collections.emptySet(), Collections.emptySet()));
 	}
