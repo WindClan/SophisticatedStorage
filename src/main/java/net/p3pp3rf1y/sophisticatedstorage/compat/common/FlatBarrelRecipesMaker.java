@@ -1,4 +1,4 @@
-package net.p3pp3rf1y.sophisticatedstorage.compat.jei;
+package net.p3pp3rf1y.sophisticatedstorage.compat.common;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;

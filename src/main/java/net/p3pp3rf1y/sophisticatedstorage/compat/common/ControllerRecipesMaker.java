@@ -1,7 +1,6 @@
-package net.p3pp3rf1y.sophisticatedstorage.compat.jei;
+package net.p3pp3rf1y.sophisticatedstorage.compat.common;
 
 import com.google.common.base.Function;
-import mezz.jei.library.util.RecipeUtil;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,7 +35,7 @@ public class ControllerRecipesMaker {
 				ingredientsCopy.add(i, getExpandedIngredient(ingredient));
 				i++;
 			}
-			return Collections.singletonList(new ShapedRecipe(originalRecipe.getId(), "", CraftingBookCategory.MISC, originalRecipe.getWidth(), originalRecipe.getHeight(), ingredientsCopy, RecipeUtil.getResultItem(originalRecipe)));
+			return Collections.singletonList(new ShapedRecipe(originalRecipe.getId(), "", CraftingBookCategory.MISC, originalRecipe.getWidth(), originalRecipe.getHeight(), ingredientsCopy, ClientRecipeHelper.getResultItem(originalRecipe)));
 		}).orElse(Collections.emptyList());
 	}
 

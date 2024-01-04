@@ -727,7 +727,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 //		addQuarkChestRecipes(consumer);
 	}
 
-/*	private void addQuarkChestRecipes(Consumer<FinishedRecipe> consumer) {
+	/*private void addQuarkChestRecipes(Consumer<FinishedRecipe> consumer) {
 		addQuarkChestRecipe(consumer, "oak_chest", WoodType.OAK);
 		addQuarkChestRecipe(consumer, "acacia_chest", WoodType.ACACIA);
 		addQuarkChestRecipe(consumer, "birch_chest", WoodType.BIRCH);
