@@ -1,7 +1,6 @@
 package net.p3pp3rf1y.sophisticatedstorage.block;
 
-import io.github.fabricators_of_create.porting_lib.util.LogicalSidedProvider;
-import net.fabricmc.api.EnvType;
+import io.github.fabricators_of_create.porting_lib.util.ServerLifecycleHooks;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -200,7 +199,7 @@ public abstract class StorageWrapper implements IStorageWrapper {
 	public void load(CompoundTag tag) {
 		loadContents(tag);
 		loadData(tag);
-		if (LogicalSidedProvider.WORKQUEUE.get(EnvType.SERVER).isSameThread() && getRenderInfo().getUpgradeItems().size() != getUpgradeHandler().getSlotCount()) {
+		if (ServerLifecycleHooks.getCurrentServer() != null && ServerLifecycleHooks.getCurrentServer().isSameThread() && getRenderInfo().getUpgradeItems().size() != getUpgradeHandler().getSlotCount()) {
 			getUpgradeHandler().setRenderUpgradeItems();
 		}
 	}
