@@ -19,7 +19,7 @@ import net.p3pp3rf1y.sophisticatedstorage.common.CapabilityStorageWrapper;
 
 @Mixin(MaterialListUtils.class)
 public class MaterialListUtilsMixin {
-	@Inject(method = "getInventoryItemCounts", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntOpenHashMap;addTo(Ljava/lang/Object;I)I", ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(method = "getInventoryItemCounts", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntOpenHashMap;addTo(Ljava/lang/Object;I)I", ordinal = 0, shift = At.Shift.AFTER, remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void sophisticatedStorage$injectStorageBlockBase(Container inv, CallbackInfoReturnable<Object2IntOpenHashMap<ItemType>> cir, Object2IntOpenHashMap<ItemType> map, int slots, int slot, ItemStack stack) {
 		if (stack.getItem() instanceof BlockItem &&
 				((BlockItem) stack.getItem()).getBlock() instanceof StorageBlockBase) {
