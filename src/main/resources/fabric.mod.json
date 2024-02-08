@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "id": "sophisticatedstorage-fabric",
-    "version": "${mod_version}",
+    "version": "${mod_full_version}",
     "name": "Sophisticated Storage",
     "description": "Fancy and functional storage containers.",
     "license": "GNU General Public License v3.0",
