@@ -269,6 +269,7 @@ public class CompressionInventoryPartTest {
 		ItemStack result;
 		try (Transaction ctx = Transaction.openOuter()) {
 			result = variant.toStack((int) part.extractItem(extractSlot, variant, extractAmount, ctx));
+			ctx.commit();
 		}
 
 		assertStackEquals(extractResult, result, "Extract result doesn't match");
@@ -391,7 +392,7 @@ public class CompressionInventoryPartTest {
 
 		ItemVariant variant = part.getVariantInSlot(extractSlot, s -> ItemVariant.blank());
 		ItemStack result;
-		try(Transaction ctx = Transaction.openOuter()) {
+		try (Transaction ctx = Transaction.openOuter()) {
 			result = variant.toStack((int) part.extractItem(extractSlot, variant, extractAmount, ctx));
 		}
 
@@ -560,6 +561,7 @@ public class CompressionInventoryPartTest {
 		ItemVariant resource = part.getVariantInSlot(0, s -> ItemVariant.blank());
 		try (Transaction ctx = Transaction.openOuter()) {
 			part.extractItem(0, resource, 63, ctx);
+			ctx.commit();
 		}
 
 		assertEquals(10L, part.insertItem(1, ItemVariant.of(Items.GOLD_NUGGET), 10, null, (s, res, amount, nested) -> 10L));
@@ -589,9 +591,12 @@ public class CompressionInventoryPartTest {
 
 		CompressionInventoryPart part = initCompressionInventoryPart(invHandler, new InventoryPartitioner.SlotRange(0, 3), () -> memorySettings);
 
+		long inserted;
 		try (Transaction simulate = Transaction.openOuter()) {
-			assertEquals(0L, (int) part.insertItem(1, ItemVariant.of(Items.GOLD_BLOCK), 32, simulate, (s, res, amount, nested) -> 0L), "Insert result does not equal");
+			inserted = part.insertItem(1, ItemVariant.of(Items.GOLD_BLOCK), 32, simulate, (s, res, amount, nested) -> 0L);
 		}
+
+		assertEquals(0L, inserted, "Insert result does not equal");
 		assertEquals(32L, part.insertItem(1, ItemVariant.of(Items.IRON_BLOCK), 32, null, (s, res, amount, nested) -> 32L), "Insert result does not equal");
 	}
 
@@ -682,7 +687,11 @@ public class CompressionInventoryPartTest {
 		CompressionInventoryPart part = initCompressionInventoryPart(invHandler, new InventoryPartitioner.SlotRange(minSlot, minSlot + 3), () -> getMemorySettings(invHandler, Map.of()));
 
 		ItemVariant resource = part.getVariantInSlot(1, s -> ItemVariant.blank());
-		assertStackEquals(damagedItem, resource.toStack((int) part.extractItem(1, resource, 1, Transaction.openOuter())), "Extracted item doesn't match");
+		ItemStack extracted;
+		try (Transaction ctx = Transaction.openOuter()) {
+			extracted = resource.toStack((int) part.extractItem(1, resource, 1, ctx));
+		}
+		assertStackEquals(damagedItem, extracted, "Extracted item doesn't match");
 	}
 
 	@Test
@@ -693,10 +702,14 @@ public class CompressionInventoryPartTest {
 		CompressionInventoryPart part = initCompressionInventoryPart(invHandler, new InventoryPartitioner.SlotRange(minSlot, minSlot + 3), () -> getMemorySettings(invHandler, Map.of()));
 
 		ItemVariant resource = part.getVariantInSlot(1, s -> ItemVariant.blank());
+		ItemStack extracted;
 		try (Transaction ctx = Transaction.openOuter()) {
-			assertStackEquals(new ItemStack(Items.COBBLESTONE, 1), resource.toStack((int) part.extractItem(1, resource, 1, ctx)), "Extracted item doesn't match");
-			assertStackEquals(new ItemStack(Items.COBBLESTONE, 9), part.getStackInSlot(1, s -> ItemStack.EMPTY), "Item left in slot doesn't match");
+			extracted = resource.toStack((int) part.extractItem(1, resource, 1, ctx));
+			ctx.commit();
 		}
+
+		assertStackEquals(new ItemStack(Items.COBBLESTONE, 1), extracted, "Extracted item doesn't match");
+		assertStackEquals(new ItemStack(Items.COBBLESTONE, 9), part.getStackInSlot(1, s -> ItemStack.EMPTY), "Item left in slot doesn't match");
 	}
 
 	@ParameterizedTest
@@ -792,8 +805,10 @@ public class CompressionInventoryPartTest {
 		ItemVariant resource = part.getVariantInSlot(slot, s -> ItemVariant.blank());
 		try (Transaction ctx = Transaction.openOuter()) {
 			part.extractItem(slot, resource, params.extractedStack.getRight(), ctx);
-			assertCalculatedStacks(params.expectedCalculatedStacks(), 0, part);
+			ctx.commit();
 		}
+
+		assertCalculatedStacks(params.expectedCalculatedStacks(), 0, part);
 	}
 
 	private record ExtractingFromFullyFilledSlotsProperlyCalculatesCountsParams(Map<Integer, ItemStack> stacks, int baseLimit,
