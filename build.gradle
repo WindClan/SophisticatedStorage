@@ -185,7 +185,7 @@ def testing(DependencyHandler deps) {
     deps.testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.+'
     deps.testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.+'
     deps.testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.+'
-    deps.testImplementation "org.mockito:mockito-core:5.1.+"
+    deps.testImplementation "org.mockito:mockito-core:5.10.+"
 }
 
 sourceSets {
