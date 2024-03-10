@@ -1,10 +1,10 @@
 package net.p3pp3rf1y.sophisticatedstorage.item;
 
-import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -36,7 +36,6 @@ import net.p3pp3rf1y.sophisticatedstorage.common.CapabilityStorageWrapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nullable;
 
 public class ShulkerBoxItem extends StorageBlockItem implements IStashStorageItem {
@@ -65,14 +64,14 @@ public class ShulkerBoxItem extends StorageBlockItem implements IStashStorageIte
 
 	@Override
 	public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-		AtomicReference<TooltipComponent> ret = new AtomicReference<>(null);
-		EnvExecutor.runWhenOn(EnvType.CLIENT, () -> () -> {
+		TooltipComponent ret = null;
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 			Minecraft mc = Minecraft.getInstance();
 			if (Screen.hasShiftDown() || (mc.player != null && !mc.player.containerMenu.getCarried().isEmpty())) {
-				ret.set(new StorageContentsTooltip(stack));
+				ret = new StorageContentsTooltip(stack);
 			}
-		});
-		return Optional.ofNullable(ret.get());
+		}
+		return Optional.ofNullable(ret);
 	}
 
 	@Override

@@ -1,10 +1,7 @@
 package net.p3pp3rf1y.sophisticatedstorage.init;
 
-import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -52,10 +49,6 @@ import net.p3pp3rf1y.sophisticatedstorage.block.ShulkerBoxBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.ShulkerBoxBlockEntity;
 import net.p3pp3rf1y.sophisticatedstorage.block.StorageLinkBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.StorageLinkBlockEntity;
-import net.p3pp3rf1y.sophisticatedstorage.client.gui.LimitedBarrelScreen;
-import net.p3pp3rf1y.sophisticatedstorage.client.gui.LimitedBarrelSettingsScreen;
-import net.p3pp3rf1y.sophisticatedstorage.client.gui.StorageScreen;
-import net.p3pp3rf1y.sophisticatedstorage.client.gui.StorageSettingsScreen;
 import net.p3pp3rf1y.sophisticatedstorage.common.gui.LimitedBarrelContainerMenu;
 import net.p3pp3rf1y.sophisticatedstorage.common.gui.LimitedBarrelSettingsContainerMenu;
 import net.p3pp3rf1y.sophisticatedstorage.common.gui.StorageContainerMenu;
@@ -314,7 +307,6 @@ public class ModBlocks {
 	}
 
 	public static void register() {
-		registerContainers();
 		registerDispenseBehavior();
 		registerCauldronInteractions();
 
@@ -323,15 +315,6 @@ public class ModBlocks {
 			protected void apply(Object object, ResourceManager resourceManager, ProfilerFiller profiler) {
 				ShulkerBoxFromChestRecipe.REGISTERED_RECIPES.clear();
 			}
-		});
-	}
-
-	private static void registerContainers() {
-		EnvExecutor.runWhenOn(EnvType.CLIENT, () -> () -> {
-			MenuScreens.register(STORAGE_CONTAINER_TYPE, StorageScreen::constructScreen);
-			MenuScreens.register(SETTINGS_CONTAINER_TYPE, StorageSettingsScreen::constructScreen);
-			MenuScreens.register(LIMITED_BARREL_CONTAINER_TYPE, LimitedBarrelScreen::new);
-			MenuScreens.register(LIMITED_BARREL_SETTINGS_CONTAINER_TYPE, LimitedBarrelSettingsScreen::new);
 		});
 	}
 
