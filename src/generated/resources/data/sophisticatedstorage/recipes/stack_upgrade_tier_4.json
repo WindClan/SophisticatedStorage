@@ -9,7 +9,7 @@
   "category": "misc",
   "key": {
     "B": {
-      "tag": "c:diamond_blocks"
+      "item": "minecraft:diamond_block"
     },
     "D": {
       "tag": "c:diamonds"

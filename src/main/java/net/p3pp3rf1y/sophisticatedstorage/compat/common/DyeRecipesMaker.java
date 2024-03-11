@@ -1,7 +1,10 @@
 package net.p3pp3rf1y.sophisticatedstorage.compat.common;
 
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -86,9 +89,9 @@ public class DyeRecipesMaker {
 	private static void addMultipleColorsRecipe(List<CraftingRecipe> recipes, Map<Item, ItemStack[]> items) {
 		items.forEach((block, stacks) -> {
 			NonNullList<Ingredient> ingredients = NonNullList.create();
-			ingredients.add(Ingredient.of(DyeColor.YELLOW.getTag()));
+			ingredients.add(Ingredient.of(ConventionalItemTags.YELLOW_DYES));
 			ingredients.add(Ingredient.of(stacks));
-			ingredients.add(Ingredient.of(DyeColor.LIME.getTag()));
+			ingredients.add(Ingredient.of(ConventionalItemTags.LIME_DYES));
 
 			ItemStack result = new ItemStack(block);
 			if (result.getItem() instanceof ITintableBlockItem tintableBlockItem) {
@@ -105,7 +108,7 @@ public class DyeRecipesMaker {
 			items.forEach((block, stacks) -> {
 				NonNullList<Ingredient> ingredients = NonNullList.create();
 				ingredients.add(Ingredient.of(stacks));
-				ingredients.add(Ingredient.of(color.getTag()));
+				ingredients.add(Ingredient.of(TagKey.create(Registries.ITEM, new ResourceLocation("c", color.getName() + "_dyes"))));
 				ItemStack result = new ItemStack(block);
 				if (result.getItem() instanceof ITintableBlockItem tintableBlockItem) {
 					tintableBlockItem.setMainColor(result, ColorHelper.getColor(color.getTextureDiffuseColors()));

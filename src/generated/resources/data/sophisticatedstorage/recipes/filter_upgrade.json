@@ -12,10 +12,10 @@
       "item": "sophisticatedstorage:upgrade_base"
     },
     "R": {
-      "tag": "c:dusts/redstone"
+      "tag": "c:redstone_dusts"
     },
     "S": {
-      "tag": "c:string"
+      "item": "minecraft:string"
     }
   },
   "pattern": [

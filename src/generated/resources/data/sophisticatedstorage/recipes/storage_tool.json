@@ -9,7 +9,7 @@
   "category": "misc",
   "key": {
     "E": {
-      "tag": "c:ender_pearls"
+      "item": "minecraft:ender_pearl"
     },
     "I": {
       "tag": "c:iron_ingots"
@@ -18,7 +18,7 @@
       "item": "minecraft:redstone_torch"
     },
     "S": {
-      "tag": "c:wooden_rods"
+      "item": "minecraft:stick"
     }
   },
   "pattern": [

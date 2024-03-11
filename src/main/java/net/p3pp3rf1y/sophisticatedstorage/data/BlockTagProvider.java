@@ -1,11 +1,11 @@
 package net.p3pp3rf1y.sophisticatedstorage.data;
 
-import me.alphamode.forgetags.Tags;
-
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
+import net.p3pp3rf1y.sophisticatedcore.api.Tags;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
 
 import java.util.concurrent.CompletableFuture;
@@ -38,9 +38,9 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 				ModBlocks.CHEST, ModBlocks.IRON_CHEST, ModBlocks.GOLD_CHEST, ModBlocks.DIAMOND_CHEST, ModBlocks.NETHERITE_CHEST,
 				ModBlocks.SHULKER_BOX, ModBlocks.IRON_SHULKER_BOX, ModBlocks.GOLD_SHULKER_BOX, ModBlocks.DIAMOND_SHULKER_BOX, ModBlocks.NETHERITE_SHULKER_BOX
 		);
-		getOrCreateTagBuilder(Tags.Blocks.CHESTS).add(ModBlocks.CHEST, ModBlocks.IRON_CHEST, ModBlocks.GOLD_CHEST, ModBlocks.DIAMOND_CHEST, ModBlocks.NETHERITE_CHEST);
-		getOrCreateTagBuilder(Tags.Blocks.CHESTS_WOODEN).add(ModBlocks.CHEST);
+		getOrCreateTagBuilder(ConventionalBlockTags.CHESTS).add(ModBlocks.CHEST, ModBlocks.IRON_CHEST, ModBlocks.GOLD_CHEST, ModBlocks.DIAMOND_CHEST, ModBlocks.NETHERITE_CHEST);
+		getOrCreateTagBuilder(Tags.Blocks.WOODEN_CHESTS).add(ModBlocks.CHEST);
 		getOrCreateTagBuilder(Tags.Blocks.BARRELS).add(ModBlocks.BARREL, ModBlocks.IRON_BARREL, ModBlocks.GOLD_BARREL, ModBlocks.DIAMOND_BARREL, ModBlocks.NETHERITE_BARREL);
-		getOrCreateTagBuilder(Tags.Blocks.BARRELS_WOODEN).add(ModBlocks.BARREL);
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS).add(ModBlocks.BARREL);
 	}
 }

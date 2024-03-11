@@ -9,7 +9,7 @@
   "category": "misc",
   "key": {
     "B": {
-      "tag": "c:gold_blocks"
+      "item": "minecraft:gold_block"
     },
     "G": {
       "tag": "c:gold_ingots"

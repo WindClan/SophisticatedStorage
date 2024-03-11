@@ -9,7 +9,7 @@
   "category": "misc",
   "key": {
     "E": {
-      "tag": "c:ender_pearls"
+      "item": "minecraft:ender_pearl"
     },
     "P": {
       "tag": "minecraft:planks"
@@ -18,7 +18,7 @@
       "item": "minecraft:repeater"
     },
     "S": {
-      "tag": "c:stone"
+      "tag": "c:stones"
     }
   },
   "pattern": [

@@ -1,9 +1,8 @@
 package net.p3pp3rf1y.sophisticatedstorage.data;
 
-import me.alphamode.forgetags.Tags;
-
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -18,6 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.p3pp3rf1y.sophisticatedcore.api.Tags;
 import net.p3pp3rf1y.sophisticatedcore.crafting.ShapeBasedRecipeBuilder;
 import net.p3pp3rf1y.sophisticatedcore.crafting.ShapelessBasedRecipeBuilder;
 import net.p3pp3rf1y.sophisticatedcore.init.ModRecipes;
@@ -55,9 +55,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 		addTierUpgradeItemRecipes(consumer);
 
 		ShapelessBasedRecipeBuilder.shapeless(ModItems.PACKING_TAPE)
-				.requires(Tags.Items.SLIMEBALLS)
+				.requires(Items.SLIME_BALL)
 				.requires(Items.PAPER)
-				.unlockedBy("has_slime", has(Tags.Items.SLIMEBALLS))
+				.unlockedBy("has_slime", has(Items.SLIME_BALL))
 				.save(consumer);
 	}
 
@@ -81,7 +81,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("III")
 				.pattern("ISI")
 				.pattern("III")
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('S', baseTierItem)
 				.unlockedBy("has_" + RegistryHelper.getItemKey(baseTierItem).getPath(), has(baseTierItem))
 				.save(consumer);
@@ -90,7 +90,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("GGG")
 				.pattern("GSG")
 				.pattern("GGG")
-				.define('G', Tags.Items.INGOTS_GOLD)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
 				.define('S', ironTierItem)
 				.unlockedBy("has_iron_" + RegistryHelper.getItemKey(ironTierItem).getPath(), has(ironTierItem))
 				.save(consumer);
@@ -99,14 +99,14 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("DDD")
 				.pattern("DSD")
 				.pattern("DDD")
-				.define('D', Tags.Items.GEMS_DIAMOND)
+				.define('D', ConventionalItemTags.DIAMONDS)
 				.define('S', goldTierItem)
 				.unlockedBy("has_gold_" + RegistryHelper.getItemKey(goldTierItem).getPath(), has(goldTierItem))
 				.save(consumer);
 
 		ShapelessBasedRecipeBuilder.shapeless(netheriteTierItem, ModBlocks.STORAGE_TIER_UPGRADE_SHAPELESS_RECIPE_SERIALIZER)
 				.requires(Ingredient.of(diamondTierItem))
-				.requires(Tags.Items.INGOTS_NETHERITE)
+				.requires(ConventionalItemTags.NETHERITE_INGOTS)
 				.unlockedBy("has_diamond_" + RegistryHelper.getItemKey(baseTierItem).getPath(), has(diamondTierItem))
 				.save(consumer, RegistryHelper.getItemKey(netheriteTierItem));
 	}
@@ -116,7 +116,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("SCS")
 				.pattern("PBP")
 				.pattern("SCS")
-				.define('S', Tags.Items.STONE)
+				.define('S', Tags.Items.STONES)
 				.define('C', Items.COMPARATOR)
 				.define('P', ItemTags.PLANKS)
 				.define('B', ModBlocks.BASE_TIER_WOODEN_STORAGE_TAG)
@@ -125,17 +125,17 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 
 		ShapelessBasedRecipeBuilder.shapeless(ModBlocks.STORAGE_LINK_ITEM, 3)
 				.requires(ModBlocks.CONTROLLER_ITEM)
-				.requires(Tags.Items.ENDER_PEARLS)
+				.requires(Items.ENDER_PEARL)
 				.unlockedBy("has_controller", has(ModBlocks.CONTROLLER_ITEM))
 				.save(consumer, SophisticatedStorage.getRL("storage_link_from_controller"));
 
 		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.STORAGE_LINK_ITEM)
 				.pattern("EP")
 				.pattern("RS")
-				.define('E', Tags.Items.ENDER_PEARLS)
+				.define('E', Items.ENDER_PEARL)
 				.define('P', ItemTags.PLANKS)
 				.define('R', Items.REPEATER)
-				.define('S', Tags.Items.STONE)
+				.define('S', Tags.Items.STONES)
 				.unlockedBy("has_repeater", has(Items.REPEATER))
 				.save(consumer);
 
@@ -143,9 +143,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern(" EI")
 				.pattern(" SR")
 				.pattern("S  ")
-				.define('E', Tags.Items.ENDER_PEARLS)
-				.define('I', Tags.Items.INGOTS_IRON)
-				.define('S', Tags.Items.RODS_WOODEN)
+				.define('E', Items.ENDER_PEARL)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
+				.define('S', Items.STICK)
 				.define('R', Items.REDSTONE_TORCH)
 				.unlockedBy(HAS_REDSTONE_TORCH_CRITERION_NAME, has(Items.REDSTONE_TORCH))
 				.save(consumer);
@@ -158,7 +158,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern(" S")
 				.define('R', Items.REDSTONE_TORCH)
 				.define('S', Items.SHULKER_SHELL)
-				.define('C', Tags.Items.CHESTS)
+				.define('C', ConventionalItemTags.CHESTS)
 				.unlockedBy("has_shulker_shell", has(Items.SHULKER_SHELL))
 				.save(consumer);
 
@@ -246,7 +246,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("IRI")
 				.pattern("III")
 				.define('R', Items.REDSTONE_TORCH)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.unlockedBy(HAS_REDSTONE_TORCH_CRITERION_NAME, has(Items.REDSTONE_TORCH))
 				.save(consumer);
 
@@ -255,7 +255,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("GTG")
 				.pattern("GGG")
 				.define('T', ModItems.BASIC_TO_IRON_TIER_UPGRADE)
-				.define('G', Tags.Items.INGOTS_GOLD)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
 				.unlockedBy("has_basic_to_iron_tier_upgrade", has(ModItems.BASIC_TO_IRON_TIER_UPGRADE))
 				.save(consumer);
 
@@ -264,13 +264,13 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("DTD")
 				.pattern("DDD")
 				.define('T', ModItems.BASIC_TO_GOLD_TIER_UPGRADE)
-				.define('D', Tags.Items.GEMS_DIAMOND)
+				.define('D', ConventionalItemTags.DIAMONDS)
 				.unlockedBy("has_basic_to_gold_tier_upgrade", has(ModItems.BASIC_TO_GOLD_TIER_UPGRADE))
 				.save(consumer);
 
 		ShapelessBasedRecipeBuilder.shapeless(ModItems.BASIC_TO_NETHERITE_TIER_UPGRADE)
 				.requires(ModItems.BASIC_TO_DIAMOND_TIER_UPGRADE)
-				.requires(Tags.Items.INGOTS_NETHERITE)
+				.requires(ConventionalItemTags.NETHERITE_INGOTS)
 				.unlockedBy("has_basic_to_diamond_tier_upgrade", has(ModItems.BASIC_TO_DIAMOND_TIER_UPGRADE))
 				.save(consumer);
 
@@ -279,7 +279,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("GRG")
 				.pattern("GGG")
 				.define('R', Items.REDSTONE_TORCH)
-				.define('G', Tags.Items.INGOTS_GOLD)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
 				.unlockedBy(HAS_REDSTONE_TORCH_CRITERION_NAME, has(Items.REDSTONE_TORCH))
 				.save(consumer);
 
@@ -288,13 +288,13 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("DTD")
 				.pattern("DDD")
 				.define('T', ModItems.IRON_TO_GOLD_TIER_UPGRADE)
-				.define('D', Tags.Items.GEMS_DIAMOND)
+				.define('D', ConventionalItemTags.DIAMONDS)
 				.unlockedBy("has_iron_to_gold_tier_upgrade", has(ModItems.IRON_TO_GOLD_TIER_UPGRADE))
 				.save(consumer);
 
 		ShapelessBasedRecipeBuilder.shapeless(ModItems.IRON_TO_NETHERITE_TIER_UPGRADE)
 				.requires(ModItems.IRON_TO_DIAMOND_TIER_UPGRADE)
-				.requires(Tags.Items.INGOTS_NETHERITE)
+				.requires(ConventionalItemTags.NETHERITE_INGOTS)
 				.unlockedBy("has_iron_to_diamond_tier_upgrade", has(ModItems.IRON_TO_DIAMOND_TIER_UPGRADE))
 				.save(consumer);
 
@@ -303,19 +303,19 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("DRD")
 				.pattern("DDD")
 				.define('R', Items.REDSTONE_TORCH)
-				.define('D', Tags.Items.GEMS_DIAMOND)
+				.define('D', ConventionalItemTags.DIAMONDS)
 				.unlockedBy(HAS_REDSTONE_TORCH_CRITERION_NAME, has(Items.REDSTONE_TORCH))
 				.save(consumer);
 
 		ShapelessBasedRecipeBuilder.shapeless(ModItems.GOLD_TO_NETHERITE_TIER_UPGRADE)
 				.requires(ModItems.GOLD_TO_DIAMOND_TIER_UPGRADE)
-				.requires(Tags.Items.INGOTS_NETHERITE)
+				.requires(ConventionalItemTags.NETHERITE_INGOTS)
 				.unlockedBy("has_gold_to_diamond_tier_upgrade", has(ModItems.GOLD_TO_DIAMOND_TIER_UPGRADE))
 				.save(consumer);
 
 		ShapelessBasedRecipeBuilder.shapeless(ModItems.DIAMOND_TO_NETHERITE_TIER_UPGRADE)
 				.requires(Items.REDSTONE_TORCH)
-				.requires(Tags.Items.INGOTS_NETHERITE)
+				.requires(ConventionalItemTags.NETHERITE_INGOTS)
 				.unlockedBy(HAS_REDSTONE_TORCH_CRITERION_NAME, has(Items.REDSTONE_TORCH))
 				.save(consumer);
 	}
@@ -326,8 +326,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("IPI")
 				.pattern("PIP")
 				.define('P', ItemTags.PLANKS)
-				.define('I', Tags.Items.INGOTS_IRON)
-				.unlockedBy("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+				.define('I', ConventionalItemTags.IRON_INGOTS)
+				.unlockedBy("has_iron_ingot", has(ConventionalItemTags.IRON_INGOTS))
 				.save(consumer);
 
 		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PICKUP_UPGRADE)
@@ -335,7 +335,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("LBL")
 				.pattern("RRR")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('L', ItemTags.PLANKS)
 				.define('P', Blocks.STICKY_PISTON)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
@@ -345,9 +345,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern(" D ")
 				.pattern("GPG")
 				.pattern("RRR")
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('P', ModItems.PICKUP_UPGRADE)
 				.unlockedBy("has_pickup_upgrade", has(ModItems.PICKUP_UPGRADE))
 				.save(consumer);
@@ -357,16 +357,16 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("SBS")
 				.pattern("RSR")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('S', Tags.Items.STRING)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
+				.define('S', Items.STRING)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
 		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ADVANCED_FILTER_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern("GPG")
 				.pattern("RRR")
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('P', ModItems.FILTER_UPGRADE)
 				.unlockedBy("has_filter_upgrade", has(ModItems.FILTER_UPGRADE))
 				.save(consumer);
@@ -375,10 +375,10 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("EIE")
 				.pattern("IPI")
 				.pattern("R L")
-				.define('E', Tags.Items.ENDER_PEARLS)
-				.define('I', Tags.Items.INGOTS_IRON)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('L', Tags.Items.GEMS_LAPIS)
+				.define('E', Items.ENDER_PEARL)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
+				.define('L', ConventionalItemTags.LAPIS)
 				.define('P', ModItems.PICKUP_UPGRADE)
 				.unlockedBy("has_pickup_upgrade", has(ModItems.PICKUP_UPGRADE))
 				.save(consumer);
@@ -387,10 +387,10 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("EIE")
 				.pattern("IPI")
 				.pattern("R L")
-				.define('E', Tags.Items.ENDER_PEARLS)
-				.define('I', Tags.Items.INGOTS_IRON)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('L', Tags.Items.GEMS_LAPIS)
+				.define('E', Items.ENDER_PEARL)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
+				.define('L', ConventionalItemTags.LAPIS)
 				.define('P', ModItems.ADVANCED_PICKUP_UPGRADE)
 				.unlockedBy("has_advanced_pickup_upgrade", has(ModItems.ADVANCED_PICKUP_UPGRADE))
 				.save(consumer);
@@ -399,9 +399,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern(" D ")
 				.pattern("GMG")
 				.pattern("RRR")
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('M', ModItems.MAGNET_UPGRADE)
 				.unlockedBy("has_magnet_upgrade", has(ModItems.MAGNET_UPGRADE))
 				.save(consumer, SophisticatedStorage.getRL("advanced_magnet_upgrade_from_basic"));
@@ -414,7 +414,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.define('C', Items.GOLDEN_CARROT)
 				.define('A', Items.GOLDEN_APPLE)
 				.define('M', Items.GLISTERING_MELON_SLICE)
-				.define('E', Tags.Items.ENDER_PEARLS)
+				.define('E', Items.ENDER_PEARL)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
@@ -423,9 +423,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("PBP")
 				.pattern("RPR")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('P', Items.PISTON)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
@@ -433,9 +433,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern(" D ")
 				.pattern("GCG")
 				.pattern("RRR")
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('C', ModItems.COMPACTING_UPGRADE)
 				.unlockedBy("has_compacting_upgrade", has(ModItems.COMPACTING_UPGRADE))
 				.save(consumer);
@@ -445,9 +445,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("OBO")
 				.pattern("ROR")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('E', Tags.Items.ENDER_PEARLS)
-				.define('O', Tags.Items.OBSIDIAN)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('E', Items.ENDER_PEARL)
+				.define('O', Items.OBSIDIAN)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
@@ -455,9 +455,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern(" D ")
 				.pattern("GVG")
 				.pattern("RRR")
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('V', ModItems.VOID_UPGRADE)
 				.unlockedBy("has_void_upgrade", has(ModItems.VOID_UPGRADE))
 				.save(consumer);
@@ -467,8 +467,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("IBI")
 				.pattern("RFR")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('F', Items.FURNACE)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
@@ -477,9 +477,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("DHD")
 				.pattern("RSH")
 				.pattern("GHG")
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('H', Items.HOPPER)
 				.define('S', ModItems.SMELTING_UPGRADE)
 				.unlockedBy(HAS_SMELTING_UPGRADE, has(ModItems.SMELTING_UPGRADE))
@@ -490,8 +490,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("IBI")
 				.pattern(" C ")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('C', Tags.Items.CHESTS)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('C', ConventionalItemTags.CHESTS)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('T', Items.CRAFTING_TABLE)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
@@ -501,8 +501,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("IBI")
 				.pattern(" R ")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('S', Items.STONECUTTER)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
@@ -521,8 +521,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("ISI")
 				.pattern("BIB")
 				.define('S', ModItems.STACK_UPGRADE_TIER_1)
-				.define('I', Tags.Items.INGOTS_IRON)
-				.define('B', Tags.Items.STORAGE_BLOCKS_IRON)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
+				.define('B', Items.IRON_BLOCK)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.STACK_UPGRADE_TIER_1))
 				.save(consumer);
 
@@ -531,8 +531,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("GSG")
 				.pattern("BGB")
 				.define('S', ModItems.STACK_UPGRADE_TIER_2)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('B', Tags.Items.STORAGE_BLOCKS_GOLD)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('B', Items.GOLD_BLOCK)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.STACK_UPGRADE_TIER_2))
 				.save(consumer);
 
@@ -541,8 +541,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("DSD")
 				.pattern("BDB")
 				.define('S', ModItems.STACK_UPGRADE_TIER_3)
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('B', Tags.Items.STORAGE_BLOCKS_DIAMOND)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('B', Items.DIAMOND_BLOCK)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.STACK_UPGRADE_TIER_3))
 				.save(consumer);
 
@@ -551,8 +551,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("IBI")
 				.pattern(" R ")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('J', Items.JUKEBOX)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
@@ -561,9 +561,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern(" D ")
 				.pattern("GVG")
 				.pattern("RRR")
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('V', ModItems.FEEDING_UPGRADE)
 				.unlockedBy("has_feeding_upgrade", has(ModItems.FEEDING_UPGRADE))
 				.save(consumer);
@@ -573,8 +573,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("IBI")
 				.pattern("RSR")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('S', Items.SMOKER)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
@@ -592,9 +592,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("DHD")
 				.pattern("RSH")
 				.pattern("GHG")
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('H', Items.HOPPER)
 				.define('S', ModItems.SMOKING_UPGRADE)
 				.unlockedBy("has_smoking_upgrade", has(ModItems.SMOKING_UPGRADE))
@@ -614,8 +614,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("IBI")
 				.pattern("RFR")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('F', Items.BLAST_FURNACE)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
@@ -625,7 +625,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("ISI")
 				.pattern("TTT")
 				.define('S', ModItems.SMELTING_UPGRADE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('T', Items.SMOOTH_STONE)
 				.unlockedBy(HAS_SMELTING_UPGRADE, has(ModItems.SMELTING_UPGRADE))
 				.save(consumer, SophisticatedStorage.getRL("blasting_upgrade_from_smelting_upgrade"));
@@ -634,9 +634,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("DHD")
 				.pattern("RSH")
 				.pattern("GHG")
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('H', Items.HOPPER)
 				.define('S', ModItems.BLASTING_UPGRADE)
 				.unlockedBy("has_blasting_upgrade", has(ModItems.BLASTING_UPGRADE))
@@ -647,7 +647,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("ISI")
 				.pattern("TTT")
 				.define('S', ModItems.AUTO_SMELTING_UPGRADE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('T', Items.SMOOTH_STONE)
 				.unlockedBy("has_auto_smelting_upgrade", has(ModItems.AUTO_SMELTING_UPGRADE))
 				.save(consumer, SophisticatedStorage.getRL("auto_blasting_upgrade_from_auto_smelting_upgrade"));
@@ -657,9 +657,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("PBP")
 				.pattern("RIR")
 				.define('B', ModItems.UPGRADE_BASE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('P', Items.PISTON)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
@@ -669,8 +669,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("RRR")
 				.define('B', ModItems.UPGRADE_BASE)
 				.define('H', Items.HOPPER)
-				.define('I', Tags.Items.INGOTS_IRON)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
@@ -678,9 +678,9 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern(" D ")
 				.pattern("GHG")
 				.pattern("ROR")
-				.define('D', Tags.Items.GEMS_DIAMOND)
-				.define('G', Tags.Items.INGOTS_GOLD)
-				.define('R', Tags.Items.DUSTS_REDSTONE)
+				.define('D', ConventionalItemTags.DIAMONDS)
+				.define('G', ConventionalItemTags.GOLD_INGOTS)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('O', Items.DROPPER)
 				.define('H', ModItems.HOPPER_UPGRADE)
 				.unlockedBy("has_feeding_upgrade", has(ModItems.HOPPER_UPGRADE))
@@ -705,8 +705,8 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern("IBI")
 				.pattern(" R ")
 				.define('B', ModItems.UPGRADE_BASE.get())
-				.define('R', Tags.Items.DUSTS_REDSTONE)
-				.define('I', Tags.Items.INGOTS_IRON)
+				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
+				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('W', workbench)
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE.get()))
 				.condition(new ModLoadedCondition(CompatModIds.CHIPPED))

@@ -8,7 +8,7 @@
   ],
   "ingredients": [
     {
-      "tag": "c:slimeballs"
+      "item": "minecraft:slime_ball"
     },
     {
       "item": "minecraft:paper"
