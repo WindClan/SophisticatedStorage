@@ -30,18 +30,10 @@ repositories {
                         username = System.getenv("REPO_USERNAME")
                         password = System.getenv("READ_PACKAGES_TOKEN")
                     }
-                },
-                maven {
-                    url = uri("https://maven.pkg.github.com/Salandora/Porting-Lib")
-                    credentials {
-                        username = System.getenv("REPO_USERNAME")
-                        password = System.getenv("READ_PACKAGES_TOKEN")
-                    }
                 }
         )
         filter {
             includeGroup "com.github.salandora"
-            includeGroup "io.github.fabricators_of_create.Porting-Lib"
         }
     }
 
@@ -81,14 +73,6 @@ repositories {
     maven { url = "https://modmaven.dev" } // Jei
     maven { url = "https://maven.ladysnake.org/releases" } // CCA, for Trinkets
     maven { url = "https://www.cursemaven.com" } // Balm, CraftingTweaks
-}
-
-configurations.configureEach {
-    resolutionStrategy.eachDependency {
-        if (requested.module.name == "fabric-loader") {
-            useVersion(loader_version)
-        }
-    }
 }
 
 dependencies {
@@ -134,14 +118,15 @@ def dependencies(DependencyHandler deps) {
         transitive = false
     }
 
-    deps.modApi("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:$forge_config_api_port_version")
+    deps.modApi("net.minecraftforge:forgeconfigapiport-fabric:$forge_config_api_port_version")
     deps.modApi("teamreborn:energy:$energy_version") {
         transitive = false
     }
 }
 
 def compat(DependencyHandler deps) {
-    deps.modCompileOnly("com.terraformersmc:modmenu:${modmenu_version}")
+    deps.modImplementation("com.terraformersmc:modmenu:${modmenu_version}")
+
     deps.modImplementation("maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}")
     deps.modImplementation("maven.modrinth:indium:${indium_version}+mc${minecraft_version}")
     deps.modImplementation("curse.maven:jade-324717:${jade_id}")
@@ -149,12 +134,9 @@ def compat(DependencyHandler deps) {
     deps.modImplementation("curse.maven:malilib-303119:$malilib_cf_file_id")
     deps.modImplementation("curse.maven:litematica-308892:$litematica_cf_file_id")
 
-    /*compileOnly fg.deobf("curse.maven:chipped-456956:${chipped_cf_file_id}")
-    runtimeOnly fg.deobf("curse.maven:chipped-456956:${chipped_cf_file_id}")
-    compileOnly fg.deobf("curse.maven:athena-841890:${athena_cf_file_id}")
-    runtimeOnly fg.deobf("curse.maven:athena-841890:${athena_cf_file_id}")
-    compileOnly fg.deobf("curse.maven:resourcefullib-570073:${resourcefullib_cf_file_id}")
-    runtimeOnly fg.deobf("curse.maven:resourcefullib-570073:${resourcefullib_cf_file_id}")*/
+    deps.modImplementation("curse.maven:chipped-456956:${chipped_cf_file_id}")
+    deps.modImplementation("curse.maven:resourcefullib-570073:${resourcefullib_cf_file_id}")
+//    deps.modImplementation("curse.maven:ctm-267602:${ctm_cf_file_id}")
 
     recipeViewers(deps)
 }
