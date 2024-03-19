@@ -2,13 +2,17 @@ package net.p3pp3rf1y.sophisticatedstorage.client.render;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
@@ -91,8 +95,28 @@ public class RenderHelper {
 	}
 
 	private static BlockState getDefaultBlockState(ResourceLocation blockName) {
-		Block block = BuiltInRegistries.BLOCK.get(blockName);
+		Block block = Registry.BLOCK.get(blockName);
 		return block != null ? block.defaultBlockState() : Blocks.AIR.defaultBlockState();
 	}
 
+	static void renderQuad(VertexConsumer consumer, Matrix4f pose, Vector3f normal, int packedOverlay, int packedLight, float alpha) {
+		renderQuad(consumer, pose, normal, packedOverlay, packedLight, alpha, 0, 0, 1, 1);
+	}
+	static void renderQuad(VertexConsumer consumer, Matrix4f pose, Vector3f normal, int packedOverlay, int packedLight, float alpha, float minU, float minV, float maxU, float maxV) {
+		int minX = 0;
+		int minY = 0;
+		int maxY = 1;
+		int maxX = 1;
+
+		addVertex(pose, normal, consumer, maxY, minX, packedOverlay, packedLight, maxU, minV, alpha);
+		addVertex(pose, normal, consumer, minY, minX, packedOverlay, packedLight, maxU, maxV, alpha);
+		addVertex(pose, normal, consumer, minY, maxX, packedOverlay, packedLight, minU, maxV, alpha);
+		addVertex(pose, normal, consumer, maxY, maxX, packedOverlay, packedLight, minU, minV, alpha);
+	}
+
+	private static void addVertex(Matrix4f pose, Vector3f normal, VertexConsumer pConsumer, int pY, float pX, int packedOverlay, int packedLight, float u, float v, float alpha) {
+		Vector4f pos = new Vector4f(pX, pY, 0, 1.0F);
+		pos.transform(pose);
+		pConsumer.vertex(pos.x(), pos.y(), pos.z(), 1, 1, 1, alpha, u, v, packedOverlay, packedLight, normal.x(), normal.y(), normal.z());
+	}
 }

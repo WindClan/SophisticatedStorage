@@ -1,8 +1,7 @@
 package net.p3pp3rf1y.sophisticatedstorage.block;
 
-import com.mojang.math.Axis;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -169,14 +168,14 @@ public class LimitedBarrelBlock extends BarrelBlock {
 			return 0;
 		}
 
-		Vector3f blockCoords = hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()).toVector3f();
+		Vector3f blockCoords = new Vector3f(hitResult.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ()));
 		blockCoords.add(-0.5f, -0.5f, -0.5f); // move to corner
 		VerticalFacing verticalFacing = getVerticalFacing(state);
 		if (verticalFacing != VerticalFacing.NO) {
-			blockCoords.rotate(getNorthBasedRotation(state.getValue(HORIZONTAL_FACING)));
-			blockCoords.rotate(getNorthBasedRotation(verticalFacing.getDirection().getOpposite()));
+			blockCoords.transform(getNorthBasedRotation(state.getValue(HORIZONTAL_FACING)));
+			blockCoords.transform(getNorthBasedRotation(verticalFacing.getDirection().getOpposite()));
 		} else {
-			blockCoords.rotate(getNorthBasedRotation(state.getValue(HORIZONTAL_FACING).getOpposite()));
+			blockCoords.transform(getNorthBasedRotation(state.getValue(HORIZONTAL_FACING).getOpposite()));
 		}
 		blockCoords.add(0.5f, 0.5f, 0.5f);
 		boolean top = blockCoords.y() > 0.5f;
@@ -202,22 +201,22 @@ public class LimitedBarrelBlock extends BarrelBlock {
 		return new LimitedBarrelContainerMenu(w, pl, pos);
 	}
 
-	public static Quaternionf getNorthBasedRotation(Direction dir) {
+	public static Quaternion getNorthBasedRotation(Direction dir) {
 		return switch (dir) {
 			case DOWN -> {
-				Quaternionf quaternion = Axis.XP.rotationDegrees(90);
-				quaternion.mul(Axis.YP.rotationDegrees(180));
+				Quaternion quaternion = Vector3f.XP.rotationDegrees(90);
+				quaternion.mul(Vector3f.YP.rotationDegrees(180));
 				yield quaternion;
 			}
 			case UP -> {
-				Quaternionf quaternion = Axis.XP.rotationDegrees(-90);
-				quaternion.mul(Axis.YP.rotationDegrees(180));
+				Quaternion quaternion = Vector3f.XP.rotationDegrees(-90);
+				quaternion.mul(Vector3f.YP.rotationDegrees(180));
 				yield quaternion;
 			}
-			case NORTH -> new Quaternionf();
-			case SOUTH -> Axis.YP.rotationDegrees(180.0F);
-			case WEST -> Axis.YP.rotationDegrees(-90.0F);
-			case EAST -> Axis.YP.rotationDegrees(90.0F);
+			case NORTH -> Quaternion.ONE.copy();
+			case SOUTH -> Vector3f.YP.rotationDegrees(180.0F);
+			case WEST -> Vector3f.YP.rotationDegrees(-90.0F);
+			case EAST -> Vector3f.YP.rotationDegrees(90.0F);
 		};
 	}
 

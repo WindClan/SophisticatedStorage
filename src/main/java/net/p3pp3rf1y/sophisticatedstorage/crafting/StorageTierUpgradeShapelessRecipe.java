@@ -1,6 +1,5 @@
 package net.p3pp3rf1y.sophisticatedstorage.crafting;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BlockItem;
@@ -25,7 +24,7 @@ public class StorageTierUpgradeShapelessRecipe extends ShapelessRecipe implement
 	private final ShapelessRecipe compose;
 
 	public StorageTierUpgradeShapelessRecipe(ShapelessRecipe compose) {
-		super(compose.getId(), compose.getGroup(), compose.category(), compose.result, compose.getIngredients());
+		super(compose.getId(), compose.getGroup(), compose.result, compose.getIngredients());
 		this.compose = compose;
 		REGISTERED_RECIPES.add(compose.getId());
 	}
@@ -41,8 +40,8 @@ public class StorageTierUpgradeShapelessRecipe extends ShapelessRecipe implement
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
-		ItemStack upgradedStorage = super.assemble(inv, registryAccess);
+	public ItemStack assemble(CraftingContainer inv) {
+		ItemStack upgradedStorage = super.assemble(inv);
 		getOriginalStorage(inv).ifPresent(originalStorage -> upgradedStorage.setTag(originalStorage.getTag()));
 		if (upgradedStorage.getItem() instanceof ShulkerBoxItem shulkerBoxItem) {
 			CapabilityStorageWrapper.get(upgradedStorage).ifPresent(wrapper -> {

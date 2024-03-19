@@ -2,13 +2,12 @@ package net.p3pp3rf1y.sophisticatedstorage.compat.common;
 
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -99,7 +98,7 @@ public class DyeRecipesMaker {
 				tintableBlockItem.setAccentColor(result, ColorHelper.getColor(DyeColor.LIME.getTextureDiffuseColors()));
 			}
 			ResourceLocation id = new ResourceLocation(SophisticatedStorage.ID, "multiple_colors");
-			recipes.add(new ShapedRecipe(id, "", CraftingBookCategory.MISC, 3, 1, ingredients, result));
+			recipes.add(new ShapedRecipe(id, "", 3, 1, ingredients, result));
 		});
 	}
 
@@ -108,14 +107,14 @@ public class DyeRecipesMaker {
 			items.forEach((block, stacks) -> {
 				NonNullList<Ingredient> ingredients = NonNullList.create();
 				ingredients.add(Ingredient.of(stacks));
-				ingredients.add(Ingredient.of(TagKey.create(Registries.ITEM, new ResourceLocation("c", color.getName() + "_dyes"))));
+				ingredients.add(Ingredient.of(TagKey.create(Registry.ITEM.key(), new ResourceLocation("c", color.getName() + "_dyes"))));
 				ItemStack result = new ItemStack(block);
 				if (result.getItem() instanceof ITintableBlockItem tintableBlockItem) {
 					tintableBlockItem.setMainColor(result, ColorHelper.getColor(color.getTextureDiffuseColors()));
 					tintableBlockItem.setAccentColor(result, ColorHelper.getColor(color.getTextureDiffuseColors()));
 				}
 				ResourceLocation id = new ResourceLocation(SophisticatedStorage.ID, "single_color_" + color.getSerializedName());
-				recipes.add(new ShapedRecipe(id, "", CraftingBookCategory.MISC, 1, 2, ingredients, result));
+				recipes.add(new ShapedRecipe(id, "", 1, 2, ingredients, result));
 			});
 		}
 	}

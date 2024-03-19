@@ -2,7 +2,7 @@ package net.p3pp3rf1y.sophisticatedstorage.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -86,7 +86,7 @@ public class ShulkerBoxRenderer extends StorageRenderer<ShulkerBoxBlockEntity> {
 		} else if (holdsItemThatShowsHiddenTiers()) {
 			//noinspection resource
 			TextureAtlasSprite sprite = getTierMaterial(blockState.getBlock()).sprite();
-			VertexConsumer vertexconsumer = sprite.wrap(bufferSource.getBuffer(RenderType.entityTranslucent(sprite.atlasLocation())));
+			VertexConsumer vertexconsumer = sprite.wrap(bufferSource.getBuffer(RenderType.entityTranslucent(sprite.atlas().location())));
 			poseStack.pushPose();
 			poseStack.translate(0, -0.01, 0);
 			poseStack.scale(1.01f, 1.01f, 1.01f);
@@ -104,7 +104,7 @@ public class ShulkerBoxRenderer extends StorageRenderer<ShulkerBoxBlockEntity> {
 		float zOffset = 0;
 		if (lidProgress > 0) {
 			zOffset = lidProgress * 0.5f;
-			poseStack.mulPose(Axis.ZP.rotationDegrees(270.0F * lidProgress));
+			poseStack.mulPose(Vector3f.ZP.rotationDegrees(270.0F * lidProgress));
 		}
 
 		poseStack.translate(-0.5D, -0.5D, -0.5D - zOffset);

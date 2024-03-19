@@ -4,11 +4,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 import committee.nova.mkb.api.IKeyBinding;
 import committee.nova.mkb.api.IKeyConflictContext;
 
-import io.github.fabricators_of_create.porting_lib.models.geometry.IGeometryLoader;
-import io.github.fabricators_of_create.porting_lib.models.geometry.RegisterGeometryLoadersCallback;
+import io.github.fabricators_of_create.porting_lib.event.client.RegisterGeometryLoadersCallback;
+import io.github.fabricators_of_create.porting_lib.model.geometry.IGeometryLoader;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.KeyMapping;
@@ -26,7 +27,9 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +40,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -65,6 +69,7 @@ import net.p3pp3rf1y.sophisticatedstorage.client.render.ClientStorageContentsToo
 import net.p3pp3rf1y.sophisticatedstorage.client.render.ControllerRenderer;
 import net.p3pp3rf1y.sophisticatedstorage.client.render.LimitedBarrelDynamicModel;
 import net.p3pp3rf1y.sophisticatedstorage.client.render.LimitedBarrelRenderer;
+import net.p3pp3rf1y.sophisticatedstorage.client.render.LockRenderer;
 import net.p3pp3rf1y.sophisticatedstorage.client.render.ShulkerBoxDynamicModel;
 import net.p3pp3rf1y.sophisticatedstorage.client.render.ShulkerBoxItemRenderer;
 import net.p3pp3rf1y.sophisticatedstorage.client.render.ShulkerBoxRenderer;
@@ -75,9 +80,10 @@ import net.p3pp3rf1y.sophisticatedstorage.init.ModItems;
 import net.p3pp3rf1y.sophisticatedstorage.item.StorageContentsTooltip;
 import net.p3pp3rf1y.sophisticatedstorage.network.ScrolledToolMessage;
 import net.p3pp3rf1y.sophisticatedstorage.network.StoragePacketHandler;
+import net.p3pp3rf1y.sophisticatedstorage.upgrades.compression.CompressionInventoryPart;
+import net.p3pp3rf1y.sophisticatedstorage.upgrades.hopper.HopperUpgradeContainer;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
@@ -112,6 +118,10 @@ public class ClientEventHandler {
 	public static void registerHandlers() {
 		RegisterGeometryLoadersCallback.EVENT.register(ClientEventHandler::onModelRegistry);
 
+		ClientSpriteRegistryCallback.event(InventoryMenu.BLOCK_ATLAS).register(ClientEventHandler::stitchTextures);
+		ClientSpriteRegistryCallback.event(Sheets.CHEST_SHEET).register(ClientEventHandler::stitchChestTextures);
+		ClientSpriteRegistryCallback.event(Sheets.SHULKER_SHEET).register(ClientEventHandler::stitchShulkerBoxTextures);
+
 		ClientEventHandler.registerLayer();
 		ClientEventHandler.registerTooltipComponent();
 		ClientEventHandler.registerOverlay();
@@ -121,7 +131,7 @@ public class ClientEventHandler {
 		ClientEventHandler.registerStorageLayerLoader();
 		ClientEventHandler.onRegisterReloadListeners();
 
-		PreparableModelLoadingPlugin.register(((resourceManager, executor) -> CompletableFuture.completedFuture(resourceManager)), (resourceManager, context) -> onRegisterAdditionalModels(resourceManager, context::addModels));
+		ModelLoadingRegistry.INSTANCE.registerModelProvider(ClientEventHandler::onRegisterAdditionalModels);
 
 		ModParticles.registerProviders();
 		ModItemColors.registerItemColorHandlers();
@@ -259,6 +269,36 @@ public class ClientEventHandler {
 
 	private static void registerOverlay() {
 		HudRenderCallback.EVENT.register(ToolInfoOverlay.HUD_TOOL_INFO);
+	}
+
+	private static void stitchTextures(TextureAtlas atlas, ClientSpriteRegistryCallback.Registry registry) {
+		stitchBlockAtlasTextures(atlas, registry);
+		registry.register(LockRenderer.LOCK_TEXTURE.texture());
+		registry.register(CompressionInventoryPart.EMPTY_COMPRESSION_SLOT.getSecond());
+		registry.register(HopperUpgradeContainer.EMPTY_INPUT_FILTER_SLOT_BACKGROUND.getSecond());
+		registry.register(HopperUpgradeContainer.EMPTY_OUTPUT_FILTER_SLOT_BACKGROUND.getSecond());
+	}
+
+	private static void stitchShulkerBoxTextures(TextureAtlas atlas, ClientSpriteRegistryCallback.Registry registry) {
+		registry.register(ShulkerBoxRenderer.BASE_TIER_MATERIAL.texture());
+		registry.register(ShulkerBoxRenderer.IRON_TIER_MATERIAL.texture());
+		registry.register(ShulkerBoxRenderer.GOLD_TIER_MATERIAL.texture());
+		registry.register(ShulkerBoxRenderer.DIAMOND_TIER_MATERIAL.texture());
+		registry.register(ShulkerBoxRenderer.NETHERITE_TIER_MATERIAL.texture());
+		registry.register(ShulkerBoxRenderer.TINTABLE_MAIN_MATERIAL.texture());
+		registry.register(ShulkerBoxRenderer.TINTABLE_ACCENT_MATERIAL.texture());
+		registry.register(ShulkerBoxRenderer.NO_TINT_MATERIAL.texture());
+	}
+
+	private static void stitchChestTextures(TextureAtlas atlas, ClientSpriteRegistryCallback.Registry registry) {
+		StorageTextureManager.INSTANCE.getUniqueChestMaterials().forEach(mat -> registry.register(mat.texture()));
+	}
+
+	private static void stitchBlockAtlasTextures(TextureAtlas atlas, ClientSpriteRegistryCallback.Registry registry) {
+		ChestDynamicModel.getWoodBreakTextures().forEach(registry::register);
+		registry.register(ChestDynamicModel.TINTABLE_BREAK_TEXTURE);
+		registry.register(ShulkerBoxDynamicModel.TINTABLE_BREAK_TEXTURE);
+		registry.register(ShulkerBoxDynamicModel.MAIN_BREAK_TEXTURE);
 	}
 
 	private static void registerEntityRenderers() {

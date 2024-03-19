@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.Block;
 import net.p3pp3rf1y.sophisticatedcore.util.BlockItemBase;
 import net.p3pp3rf1y.sophisticatedcore.util.NBTHelper;
 import net.p3pp3rf1y.sophisticatedstorage.block.ITintableBlockItem;
+import net.p3pp3rf1y.sophisticatedstorage.init.ModItems;
 
 import java.util.Optional;
 
@@ -15,7 +16,7 @@ public class StorageBlockItem extends BlockItemBase implements ITintableBlockIte
 	private static final String SHOWS_TIER_TAG = "showsTier";
 
 	public StorageBlockItem(Block block, Properties properties) {
-		super(block, properties);
+		super(block, properties, ModItems.CREATIVE_TAB);
 	}
 
 	public static Optional<Integer> getMainColorFromStack(ItemStack barrelStack) {

@@ -1,12 +1,11 @@
 package net.p3pp3rf1y.sophisticatedstorage.client.util;
 
 import com.mojang.math.Transformation;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -22,8 +21,9 @@ public class QuadTransformers {
 			this.clear();
 		}
 
-		public void emitDirectly() {
-			// noop
+		@Override
+		public QuadEmitter emit() {
+			return null;
 		}
 	};
 
@@ -35,7 +35,7 @@ public class QuadTransformers {
 			MutableQuadView mqv = editorQuad.fromVanilla(quad, null, null);
 			transform.transform(mqv);
 
-			BakedQuad transformedQuad = mqv.toBakedQuad(quad.getSprite());
+			BakedQuad transformedQuad = mqv.toBakedQuad(0, quad.getSprite(), false);
 			transformedQuads.add(transformedQuad);
 			editorQuad.clear();
 		}
@@ -44,26 +44,25 @@ public class QuadTransformers {
 	}
 
     public static RenderContext.QuadTransform applying(Transformation transform) {
-        if (transform.equals(Transformation.identity()))
+        if (transform.isIdentity())
             return quad -> true;
-
-        Matrix4f matrix = transform.getMatrix();
-        Matrix3f normalMatrix = new Matrix3f(matrix).invert().transpose();
 
         return quad -> {
             for (int i = 0; i < 4; i++) {
-                Vector4f pos = new Vector4f(quad.x(i), quad.y(i), quad.z(i), 1).mul(transform.getMatrix());
-                pos.div(pos.w);
+                Vector4f pos = new Vector4f(quad.x(i), quad.y(i), quad.z(i), 1);
+				transform.transformPosition(pos);
+				pos.perspectiveDivide();
+
                 quad.pos(i, pos.x(), pos.y(), pos.z());
             }
 
             for (int i = 0; i < 4; i++) {
                 if (quad.hasNormal(i)) {
-                    quad.normal(i,
-                            new Vector3f(quad.normalX(i), quad.normalY(i), quad.normalZ(i))
-                            .mul(normalMatrix)
-                            .normalize()
-                    );
+					Vector3f normal = new Vector3f(quad.normalX(i), quad.normalY(i), quad.z(i));
+					transform.transformNormal(normal);
+					normal.normalize();
+
+                    quad.normal(i, normal);
                 }
             }
             return true;

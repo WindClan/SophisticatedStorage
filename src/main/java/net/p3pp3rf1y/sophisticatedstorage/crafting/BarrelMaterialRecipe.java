@@ -1,12 +1,10 @@
 package net.p3pp3rf1y.sophisticatedstorage.crafting;
 
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -24,8 +22,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BarrelMaterialRecipe extends CustomRecipe {
-	public BarrelMaterialRecipe(ResourceLocation registryName, CraftingBookCategory category) {
-		super(registryName, category);
+	public BarrelMaterialRecipe(ResourceLocation registryName) {
+		super(registryName);
 	}
 
 	@Override
@@ -86,7 +84,7 @@ public class BarrelMaterialRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
+	public ItemStack assemble(CraftingContainer container) {
 		int barrelColumn = -1;
 		int barrelRow = -1;
 		ItemStack barrelStackCopy = ItemStack.EMPTY;
@@ -208,7 +206,7 @@ public class BarrelMaterialRecipe extends CustomRecipe {
 					boolean firstMaterial = true;
 					for (BarrelMaterial barrelMaterial : barrelMaterials) {
 						if (!materials.containsKey(barrelMaterial) || firstMaterial) {
-							materials.put(barrelMaterial, BuiltInRegistries.BLOCK.getKey(blockItem.getBlock()));
+							materials.put(barrelMaterial, Registry.BLOCK.getKey(blockItem.getBlock()));
 						}
 						firstMaterial = false;
 					}

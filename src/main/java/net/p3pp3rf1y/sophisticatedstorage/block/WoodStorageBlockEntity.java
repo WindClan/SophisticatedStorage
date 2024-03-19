@@ -2,7 +2,7 @@ package net.p3pp3rf1y.sophisticatedstorage.block;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -67,7 +67,7 @@ public abstract class WoodStorageBlockEntity extends StorageBlockEntity {
 	}
 
 	private Component makeWoodStorageDescriptionId(@Nullable WoodType wt) {
-		String id = Util.makeDescriptionId("block", Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(getBlockState().getBlock())));
+		String id = Util.makeDescriptionId("block", Objects.requireNonNull(Registry.BLOCK.getKey(getBlockState().getBlock())));
 		return WoodStorageBlockItem.getDisplayName(id, wt);
 	}
 

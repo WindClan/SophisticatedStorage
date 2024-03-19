@@ -1,12 +1,12 @@
 package net.p3pp3rf1y.sophisticatedstorage.client.render;
 
-import org.joml.Vector3f;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -29,13 +29,13 @@ public class LimitedBarrelDynamicModel extends BarrelDynamicModelBase<LimitedBar
 	}
 
 	@Override
-	protected BarrelBakedModelBase instantiateBakedModel(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
-		return new LimitedBarrelBakedModel(baker, spriteGetter, woodModelParts, flatTopModel, woodDynamicBakingData, woodPartitionedModelParts);
+	protected BarrelBakedModelBase instantiateBakedModel(ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
+		return new LimitedBarrelBakedModel(bakery, spriteGetter, woodModelParts, flatTopModel, woodDynamicBakingData, woodPartitionedModelParts);
 	}
 
 	private static class LimitedBarrelBakedModel extends BarrelBakedModelBase {
-		public LimitedBarrelBakedModel(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,  Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
-			super(baker, spriteGetter, woodModelParts, flatTopModel, woodDynamicBakingData, woodPartitionedModelParts);
+		public LimitedBarrelBakedModel(ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,  Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
+			super(bakery, spriteGetter, woodModelParts, flatTopModel, woodDynamicBakingData, woodPartitionedModelParts);
 		}
 
 		@Override
@@ -73,9 +73,9 @@ public class LimitedBarrelDynamicModel extends BarrelDynamicModelBase<LimitedBar
 		protected void rotateDisplayItemFrontOffset(BlockState state, Direction dir, Vector3f frontOffset) {
 			VerticalFacing verticalFacing = state.getValue(LimitedBarrelBlock.VERTICAL_FACING);
 			if (verticalFacing != VerticalFacing.NO) {
-				frontOffset.rotate(getNorthBasedRotation(verticalFacing.getDirection()));
+				frontOffset.transform(getNorthBasedRotation(verticalFacing.getDirection()));
 			}
-			frontOffset.rotate(getNorthBasedRotation(state.getValue(LimitedBarrelBlock.HORIZONTAL_FACING)));
+			frontOffset.transform(getNorthBasedRotation(state.getValue(LimitedBarrelBlock.HORIZONTAL_FACING)));
 		}
 
 		@Override

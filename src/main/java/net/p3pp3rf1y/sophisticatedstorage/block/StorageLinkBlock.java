@@ -20,7 +20,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.p3pp3rf1y.sophisticatedcore.client.gui.utils.TranslationHelper;
 import net.p3pp3rf1y.sophisticatedcore.controller.ILinkable;
-import net.p3pp3rf1y.sophisticatedcore.util.BlockBase;
 import net.p3pp3rf1y.sophisticatedcore.util.RotatedShapes;
 import net.p3pp3rf1y.sophisticatedcore.util.WorldHelper;
 import net.p3pp3rf1y.sophisticatedstorage.client.gui.StorageTranslationHelper;
@@ -32,7 +31,7 @@ import javax.annotation.Nullable;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 
-public class StorageLinkBlock extends BlockBase implements EntityBlock {
+public class StorageLinkBlock extends Block implements EntityBlock {
 	private static final Map<Direction, VoxelShape> ROTATED_SHAPES = new EnumMap<>(Direction.class);
 	private static final RotatedShapes SHAPE = new RotatedShapes(false, Block.box(1, 14, 1, 15, 16, 15));
 

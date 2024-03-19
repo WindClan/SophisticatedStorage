@@ -27,6 +27,7 @@ import net.p3pp3rf1y.sophisticatedstorage.block.IUpgradeDisplay;
 import net.p3pp3rf1y.sophisticatedstorage.block.StorageBlockEntity;
 import net.p3pp3rf1y.sophisticatedstorage.client.gui.StorageTranslationHelper;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
+import net.p3pp3rf1y.sophisticatedstorage.init.ModItems;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class StorageToolItem extends ItemBase {
 	private static final String MODE_TAG = "mode";
 
 	public StorageToolItem() {
-		super(new Item.Properties().stacksTo(1));
+		super(new Item.Properties().stacksTo(1), ModItems.CREATIVE_TAB);
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.p3pp3rf1y.porting_lib.transfer.items.SlottedStackStorage;
 import net.p3pp3rf1y.sophisticatedcore.controller.IControllableStorage;
 import net.p3pp3rf1y.sophisticatedcore.controller.ILinkable;
 import net.p3pp3rf1y.sophisticatedcore.inventory.CachedFailedInsertInventoryHandler;

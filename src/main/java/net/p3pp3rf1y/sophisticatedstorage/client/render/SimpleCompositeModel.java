@@ -7,12 +7,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 
-import io.github.fabricators_of_create.porting_lib.models.geometry.IGeometryLoader;
-import io.github.fabricators_of_create.porting_lib.models.geometry.IUnbakedGeometry;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import io.github.fabricators_of_create.porting_lib.model.geometry.IGeometryBakingContext;
+import io.github.fabricators_of_create.porting_lib.model.geometry.IGeometryLoader;
+import io.github.fabricators_of_create.porting_lib.model.geometry.IUnbakedGeometry;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -21,27 +21,24 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,12 +52,12 @@ public class SimpleCompositeModel implements IUnbakedGeometry<SimpleCompositeMod
 	}
 
 	@Override
-	public BakedModel bake(BlockModel context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation, boolean isGui3d) {
+	public BakedModel bake(IGeometryBakingContext context, ModelBakery baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
 		Material particleLocation = context.getMaterial(PARTICLE_MATERIAL);
 		TextureAtlasSprite particle = spriteGetter.apply(particleLocation);
 
 		var rootTransform = context.getRootTransform();
-		if (!rootTransform.equals(Transformation.identity())) {
+		if (!rootTransform.isIdentity()) {
 			ModelState finalModelState = modelState;
 			modelState = new ModelState() {
 				@Override
@@ -88,7 +85,7 @@ public class SimpleCompositeModel implements IUnbakedGeometry<SimpleCompositeMod
 
 		var itemPassesBuilder = ImmutableList.<BakedModel>builder();
 
-		return new Baked(isGui3d, context.getGuiLight().lightLikeBlock(), context.hasAmbientOcclusion(), particle, context.getTransforms(), overrides, bakedParts, itemPassesBuilder.build());
+		return new Baked(context.isGui3d(), context.useBlockLight(), context.useAmbientOcclusion(), particle, context.getTransforms(), overrides, bakedParts, itemPassesBuilder.build());
 	}
 
 	@SuppressWarnings("java:S5803") //need to access textureMap here to get textures
@@ -96,7 +93,7 @@ public class SimpleCompositeModel implements IUnbakedGeometry<SimpleCompositeMod
 		HashMap<String, Either<Material, String>> textures = new HashMap<>();
 		children.values().forEach(childModel -> {
 			childModel.textureMap.forEach(textures::putIfAbsent);
-			if (childModel.getCustomGeometry() instanceof SimpleCompositeModel compositeModel) {
+			if (childModel.getGeometry().getCustomGeometry() instanceof SimpleCompositeModel compositeModel) {
 				compositeModel.getTextures().forEach(textures::putIfAbsent);
 			} else if (childModel.parent != null) {
 				childModel.parent.textureMap.forEach(textures::putIfAbsent);
@@ -106,18 +103,13 @@ public class SimpleCompositeModel implements IUnbakedGeometry<SimpleCompositeMod
 		return textures;
 	}
 
-	@Override
-	public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, BlockModel context) {
-		children.values().forEach(childModel -> childModel.resolveParents(modelGetter));
-	}
-
 	@SuppressWarnings("java:S1874") //need to get elements from the model so actually need to call getElements here
 	public List<BlockElement> getElements() {
 		List<BlockElement> elements = new ArrayList<>();
 
 		children.forEach((name, model) -> {
 			elements.addAll(model.getElements());
-			if (model.getCustomGeometry() instanceof SimpleCompositeModel compositeModel) {
+			if (model.getGeometry().getCustomGeometry() instanceof SimpleCompositeModel compositeModel) {
 				elements.addAll(compositeModel.getElements());
 			}
 		});
@@ -126,11 +118,24 @@ public class SimpleCompositeModel implements IUnbakedGeometry<SimpleCompositeMod
 	}
 
 	@Override
+	public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+		Set<Material> textures = new HashSet<>();
+		if (context.hasMaterial(PARTICLE_MATERIAL)) {
+			textures.add(context.getMaterial(PARTICLE_MATERIAL));
+		}
+		for (BlockModel part : children.values()) {
+			textures.addAll(part.getMaterials(modelGetter, missingTextureErrors));
+		}
+
+		return textures;
+	}
+
+	@Override
 	public Set<String> getConfigurableComponentNames() {
 		return children.keySet();
 	}
 
-	public static class Baked implements BakedModel, FabricBakedModel {
+	public static class Baked implements BakedModel/*, FabricBakedModel*/ {
 		private final boolean isAmbientOcclusion;
 		private final boolean isGui3d;
 		private final boolean isSideLit;
@@ -159,7 +164,7 @@ public class SimpleCompositeModel implements IUnbakedGeometry<SimpleCompositeMod
 			return quadLists;
 		}
 
-		@Override
+		/*@Override
 		public boolean isVanillaAdapter() {
 			return false;
 		}
@@ -167,16 +172,24 @@ public class SimpleCompositeModel implements IUnbakedGeometry<SimpleCompositeMod
 		@Override
 		public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
 			for (Map.Entry<String, BakedModel> entry : children.entrySet()) {
-				entry.getValue().emitBlockQuads(blockView, state, pos, randomSupplier, context);
+				if (entry.getValue() instanceof FabricBakedModel fabricBakedModel) {
+					fabricBakedModel.emitBlockQuads(blockView, state, pos, randomSupplier, context);
+				} else {
+					context.bakedModelConsumer().accept(entry.getValue());
+				}
 			}
 		}
 
 		@Override
 		public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
 			for (Map.Entry<String, BakedModel> entry : children.entrySet()) {
-				entry.getValue().emitItemQuads(stack, randomSupplier, context);
+				if (entry.getValue() instanceof FabricBakedModel fabricBakedModel) {
+					fabricBakedModel.emitItemQuads(stack, randomSupplier, context);
+				} else {
+					context.bakedModelConsumer().accept(entry.getValue());
+				}
 			}
-		}
+		}*/
 
 		@Override
 		public boolean useAmbientOcclusion() {

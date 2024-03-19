@@ -2,6 +2,7 @@ package net.p3pp3rf1y.sophisticatedstorage.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -57,7 +59,6 @@ import net.p3pp3rf1y.sophisticatedstorage.item.StorageBlockItem;
 import net.p3pp3rf1y.sophisticatedstorage.item.StorageToolItem;
 
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
@@ -160,20 +161,20 @@ public class ShulkerBoxBlock extends StorageBlockBase implements IAdditionalDrop
 	}
 
 	@Override
-	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
-		itemConsumer.accept(new ItemStack(this));
+	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
+		items.add(new ItemStack(this));
 
 		if (this == ModBlocks.SHULKER_BOX || Boolean.TRUE.equals(Config.CLIENT.showHigherTierTintedVariants.get())) {
 			for (DyeColor color : DyeColor.values()) {
 				ItemStack storageStack = getTintedStack(color);
-				itemConsumer.accept(storageStack);
+				items.add(storageStack);
 			}
 			ItemStack storageStack = new ItemStack(this);
 			if (storageStack.getItem() instanceof ITintableBlockItem tintableBlockItem) {
 				tintableBlockItem.setMainColor(storageStack, ColorHelper.getColor(DyeColor.YELLOW.getTextureDiffuseColors()));
 				tintableBlockItem.setAccentColor(storageStack, ColorHelper.getColor(DyeColor.LIME.getTextureDiffuseColors()));
 			}
-			itemConsumer.accept(storageStack);
+			items.add(storageStack);
 		}
 	}
 

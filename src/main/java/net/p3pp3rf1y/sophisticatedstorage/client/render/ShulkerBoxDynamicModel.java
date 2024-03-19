@@ -2,21 +2,23 @@ package net.p3pp3rf1y.sophisticatedstorage.client.render;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 
-import io.github.fabricators_of_create.porting_lib.models.geometry.IGeometryLoader;
-import io.github.fabricators_of_create.porting_lib.models.geometry.IUnbakedGeometry;
+import io.github.fabricators_of_create.porting_lib.model.geometry.IGeometryBakingContext;
+import io.github.fabricators_of_create.porting_lib.model.geometry.IGeometryLoader;
+import io.github.fabricators_of_create.porting_lib.model.geometry.IUnbakedGeometry;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -28,8 +30,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
 import net.p3pp3rf1y.sophisticatedstorage.block.ShulkerBoxBlockEntity;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 
@@ -39,8 +43,13 @@ public class ShulkerBoxDynamicModel implements IUnbakedGeometry<ShulkerBoxDynami
 	public static final ResourceLocation MAIN_BREAK_TEXTURE = SophisticatedStorage.getRL(BLOCK_BREAK_FOLDER + "shulker_box");
 
 	@Override
-	public BakedModel bake(BlockModel context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation, boolean isGui3d) {
+	public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery,  Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
 		return new ShulkerBoxBakedModel();
+	}
+
+	@Override
+	public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+		return Collections.emptySet();
 	}
 
 	private static class ShulkerBoxBakedModel implements BakedModel, IDataModel {

@@ -25,8 +25,8 @@ public class ClientStorageContentsTooltip extends ClientStorageContentsTooltipBa
 	}
 
 	@Override
-	public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer) {
-		CapabilityStorageWrapper.get(storageItem).ifPresent(wrapper -> renderTooltip(wrapper, font, x, y, poseStack, itemRenderer));
+	public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer, int blitOffset) {
+		CapabilityStorageWrapper.get(storageItem).ifPresent(wrapper -> renderTooltip(wrapper, font, x, y, poseStack, itemRenderer, blitOffset));
 	}
 
 	public ClientStorageContentsTooltip(StorageContentsTooltip tooltip) {

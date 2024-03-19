@@ -1,6 +1,5 @@
 package net.p3pp3rf1y.sophisticatedstorage.crafting;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BlockItem;
@@ -25,7 +24,7 @@ public class StorageTierUpgradeRecipe extends ShapedRecipe implements IWrapperRe
 	private final ShapedRecipe compose;
 
 	public StorageTierUpgradeRecipe(ShapedRecipe compose) {
-		super(compose.getId(), compose.getGroup(), compose.category(), compose.getWidth(), compose.getHeight(), compose.getIngredients(), compose.result);
+		super(compose.getId(), compose.getGroup(), compose.getWidth(), compose.getHeight(), compose.getIngredients(), compose.result);
 		this.compose = compose;
 		REGISTERED_RECIPES.add(compose.getId());
 	}
@@ -41,8 +40,8 @@ public class StorageTierUpgradeRecipe extends ShapedRecipe implements IWrapperRe
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
-		ItemStack upgradedStorage = super.assemble(inv, registryAccess);
+	public ItemStack assemble(CraftingContainer inv) {
+		ItemStack upgradedStorage = super.assemble(inv);
 		getOriginalStorage(inv).ifPresent(originalStorage -> upgradedStorage.setTag(originalStorage.getTag()));
 		if (upgradedStorage.getItem() instanceof ShulkerBoxItem shulkerBoxItem) {
 			CapabilityStorageWrapper.get(upgradedStorage).ifPresent(wrapper -> {

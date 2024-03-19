@@ -1,5 +1,6 @@
 package net.p3pp3rf1y.sophisticatedstorage.upgrades.hopper;
 
+import net.minecraft.world.item.CreativeModeTab;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeItemBase;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeType;
 
@@ -13,8 +14,8 @@ public class HopperUpgradeItem extends UpgradeItemBase<HopperUpgradeWrapper> {
 	private final IntSupplier maxTransferStackSize;
 	public static final UpgradeType<HopperUpgradeWrapper> TYPE = new UpgradeType<>(HopperUpgradeWrapper::new);
 
-	public HopperUpgradeItem(IntSupplier inputFilterSlotCount, IntSupplier outputFilterSlotCount, IntSupplier transferSpeedTicks, IntSupplier maxTransferStackSize) {
-		super();
+	public HopperUpgradeItem(CreativeModeTab itemGroup, IntSupplier inputFilterSlotCount, IntSupplier outputFilterSlotCount, IntSupplier transferSpeedTicks, IntSupplier maxTransferStackSize) {
+		super(itemGroup);
 		this.inputFilterSlotCount = inputFilterSlotCount;
 		this.outputFilterSlotCount = outputFilterSlotCount;
 		this.transferSpeedTicks = transferSpeedTicks;

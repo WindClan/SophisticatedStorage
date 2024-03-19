@@ -1,12 +1,11 @@
 package net.p3pp3rf1y.sophisticatedstorage.init;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.version.VersionPredicate;
-import net.fabricmc.loader.impl.util.version.VersionPredicateParser;
+import net.p3pp3rf1y.sophisticatedcore.compat.CompatModIds;
 import net.p3pp3rf1y.sophisticatedcore.compat.ICompat;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
-import net.p3pp3rf1y.sophisticatedstorage.compat.sodium.SodiumCompat;
+import net.p3pp3rf1y.sophisticatedstorage.compat.chipped.ChippedCompat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +16,7 @@ import javax.annotation.Nullable;
 public class ModCompat {
 	private ModCompat() {}
 
-	 private static final String SODIUM_MOD_ID = "sodium";
+	 //private static final String SODIUM_MOD_ID = "sodium";
 
 	private static final Map<CompatInfo, Supplier<Callable<ICompat>>> compatFactories = new HashMap<>();
 
@@ -25,13 +24,13 @@ public class ModCompat {
 
 	static {
 		// compatFactories.put(new CompatInfo(CompatModIds.QUARK, null), () -> QuarkCompat::new);
-		// compatFactories.put(new CompatInfo(CompatModIds.CHIPPED, null), () -> ChippedCompat::new);
-		try {
+		compatFactories.put(new CompatInfo(CompatModIds.CHIPPED, null), () -> ChippedCompat::new);
+		/*try {
 			compatFactories.put(new CompatInfo(SODIUM_MOD_ID, VersionPredicateParser.parse(">=0.4.9 <0.5")), () -> SodiumCompat::new);
 		}
 		catch (VersionParsingException e) {
 			throw new RuntimeException(e);
-		}
+		}*/
 	}
 
 	public static void compatsSetup() {

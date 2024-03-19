@@ -30,9 +30,15 @@ import net.p3pp3rf1y.sophisticatedstorage.item.StorageBlockItem;
 import net.p3pp3rf1y.sophisticatedstorage.item.WoodStorageBlockItem;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 public class EmiCompat implements EmiPlugin {
-    @Override
+	private static Consumer<EmiRegistry> additionalCategories = registration -> {};
+	public static void setAdditionalCategories(Consumer<EmiRegistry> additionalCategories) {
+		EmiCompat.additionalCategories = additionalCategories;
+	}
+
+	@Override
     public void register(EmiRegistry registry) {
         registry.addExclusionArea(StorageScreen.class, (screen, consumer) -> {
             screen.getUpgradeSlotsRectangle().ifPresent(r -> consumer.accept(new Bounds(r.getX(), r.getY(), r.getWidth(), r.getHeight())));
@@ -125,13 +131,14 @@ public class EmiCompat implements EmiPlugin {
 
 		registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING, EmiStack.of(ModItems.CRAFTING_UPGRADE));
 		registry.addWorkstation(VanillaEmiRecipeCategories.STONECUTTING, EmiStack.of(ModItems.STONECUTTER_UPGRADE));
+		additionalCategories.accept(registry);
     }
 
     private static void registerCraftingRecipes(EmiRegistry registry, Collection<CraftingRecipe> recipes) {
         recipes.forEach(r -> registry.addRecipe(
             new EmiCraftingRecipe(
                 r.getIngredients().stream().map(EmiIngredient::of).toList(),
-                EmiStack.of(r.getResultItem(null)),
+                EmiStack.of(r.getResultItem()),
                 r.getId())
             )
         );

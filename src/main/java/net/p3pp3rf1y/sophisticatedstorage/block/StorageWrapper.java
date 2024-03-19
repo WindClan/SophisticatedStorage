@@ -1,7 +1,7 @@
 package net.p3pp3rf1y.sophisticatedstorage.block;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.player.Player;
@@ -127,7 +127,7 @@ public abstract class StorageWrapper implements IStorageWrapper {
 				@Override
 				public boolean isItemValid(int slot, ItemVariant resource) {
 					//noinspection ConstantConditions - by this time the upgrade has registryName so it can't be null
-					return super.isItemValid(slot, resource) && (resource.isBlank() || SophisticatedStorage.ID.equals(BuiltInRegistries.ITEM.getKey(resource.getItem()).getNamespace()) || resource.toStack().is(ModItems.STORAGE_UPGRADE_TAG));
+					return super.isItemValid(slot, resource) && (resource.isBlank() || SophisticatedStorage.ID.equals(Registry.ITEM.getKey(resource.getItem()).getNamespace()) || resource.toStack().is(ModItems.STORAGE_UPGRADE_TAG));
 				}
 
 				@Override

@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
 import net.p3pp3rf1y.sophisticatedcore.settings.memory.MemorySettingsCategory;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.voiding.VoidUpgradeWrapper;
+import net.p3pp3rf1y.sophisticatedcore.util.InventoryHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.ItemStackHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.NBTHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.RandHelper;
@@ -175,7 +176,7 @@ public class LimitedBarrelBlockEntity extends BarrelBlockEntity implements ICoun
 		boolean success = false;
 		Predicate<ItemStack> memoryItemMatches = itemStack -> memorySettings.isSlotSelected(slot) && memorySettings.matchesFilter(slot, itemStack);
 		PlayerInventoryStorage playerInventory = PlayerInventoryStorage.of(player);
-		for (var view : playerInventory.nonEmptyViews()) {
+		for (var view : InventoryHelper.getNonEmpty(playerInventory)) {
 			ItemVariant resource = view.getResource();
 			if ((stackInSlot.isEmpty() && (memoryItemMatches.test(resource.toStack()) || invHandler.isFilterItem(resource.getItem())) || (!resource.isBlank() && ItemStackHelper.canItemStacksStack(stackInSlot, resource.toStack((int) view.getAmount()))))) {
 				try (Transaction ctx = Transaction.openOuter()) {

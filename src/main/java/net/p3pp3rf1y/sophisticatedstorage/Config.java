@@ -1,12 +1,12 @@
 package net.p3pp3rf1y.sophisticatedstorage;
 
-import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
-import fuzs.forgeconfigapiport.api.config.v2.ModConfigEvents;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.api.ModLoadingContext;
+import net.minecraftforge.api.fml.event.config.ModConfigEvents;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.FilteredUpgradeConfig;
@@ -271,8 +271,8 @@ public class Config {
 
 				for (String disallowedItemName : disallowedItemsList.get()) {
 					ResourceLocation registryName = new ResourceLocation(disallowedItemName);
-					if (BuiltInRegistries.ITEM.containsKey(registryName)) {
-						disallowedItemsSet.add(BuiltInRegistries.ITEM.get(registryName));
+					if (Registry.ITEM.containsKey(registryName)) {
+						disallowedItemsSet.add(Registry.ITEM.get(registryName));
 					}
 				}
 			}
@@ -293,7 +293,7 @@ public class Config {
 		SERVER = register(Server::new, ModConfig.Type.SERVER);
 
 		for (Map.Entry<ModConfig.Type, BaseConfig> pair : CONFIGS.entrySet()) {
-			ForgeConfigRegistry.INSTANCE.register(SophisticatedStorage.ID, pair.getKey(), pair.getValue().specification);
+			ModLoadingContext.registerConfig(SophisticatedStorage.ID, pair.getKey(), pair.getValue().specification);
 		}
 
 		ModConfigEvents.loading(SophisticatedStorage.ID).register(Config::onLoad);

@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.p3pp3rf1y.sophisticatedcore.controller.ControllerBlockEntityBase;
+import net.p3pp3rf1y.sophisticatedcore.util.InventoryHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.WorldHelper;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
 
@@ -34,7 +35,7 @@ public class ControllerBlockEntity extends ControllerBlockEntityBase implements 
 		lastDepositTime = gameTime;
 		if (doubleClick) {
 			PlayerInventoryStorage playerInventory = PlayerInventoryStorage.of(player);
-			for (var view : playerInventory.nonEmptyViews()) {
+			for (var view : InventoryHelper.getNonEmpty(playerInventory)) {
 				if (canDepositStack(view.getResource().toStack((int) view.getAmount()))) {
 					try(Transaction ctx = Transaction.openOuter()) {
 						long inserted = insert(view.getResource(), view.getAmount(), ctx, false);
@@ -51,7 +52,9 @@ public class ControllerBlockEntity extends ControllerBlockEntityBase implements 
 		if (!itemInHand.isEmpty() && canDepositStack(itemInHand)) {
 			try (Transaction ctx = Transaction.openOuter()) {
 				long inserted = insert(ItemVariant.of(itemInHand), itemInHand.getCount(), ctx, false);
-				player.setItemInHand(hand, itemInHand.copyWithCount(itemInHand.getCount() - (int) inserted));
+				ItemStack copy = itemInHand.copy();
+				copy.setCount(itemInHand.getCount() - (int) inserted);
+				player.setItemInHand(hand, copy);
 			}
 		}
 	}

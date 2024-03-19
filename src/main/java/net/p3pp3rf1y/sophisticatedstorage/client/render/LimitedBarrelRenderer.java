@@ -1,7 +1,7 @@
 package net.p3pp3rf1y.sophisticatedstorage.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Vector3f;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -125,7 +125,7 @@ public class LimitedBarrelRenderer extends BarrelRenderer<LimitedBarrelBlockEnti
 			Font font = Minecraft.getInstance().font;
 			float countDisplayXOffset = -font.getSplitter().stringWidth(countString) / 2f;
 			poseStack.translate(countDisplayXOffset, 0, 0);
-			font.drawInBatch(countString, 0, 0, blockEntity.getSlotColor(displayItemIndex), false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, packedLight);
+			font.drawInBatch(countString, 0, 0, blockEntity.getSlotColor(displayItemIndex), false, poseStack.last().pose(), bufferSource, false, 0, packedLight);
 
 			poseStack.popPose();
 		}

@@ -6,8 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.ShulkerBoxDispenseBehavior;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -22,7 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -80,7 +78,7 @@ public class ModBlocks {
 
 	private ModBlocks() {}
 
-	public static final TagKey<Item> BASE_TIER_WOODEN_STORAGE_TAG = TagKey.create(Registries.ITEM, SophisticatedStorage.getRL("base_tier_wooden_storage"));
+	public static final TagKey<Item> BASE_TIER_WOODEN_STORAGE_TAG = TagKey.create(Registry.ITEM.key(), SophisticatedStorage.getRL("base_tier_wooden_storage"));
 
 	public static Collection<Block> getBlocksByPredicate(BiPredicate<ResourceLocation, Block> matches) {
 		List<Block> blocks = new ArrayList<>();
@@ -205,11 +203,11 @@ public class ModBlocks {
 
 	private static final String CONTROLLER_REG_NAME = "controller";
 	public static final ControllerBlock CONTROLLER = register(CONTROLLER_REG_NAME, ControllerBlock::new);
-	public static final BlockItemBase CONTROLLER_ITEM = registerItem(CONTROLLER_REG_NAME, () -> new BlockItemBase(CONTROLLER, new Properties()));
+	public static final BlockItemBase CONTROLLER_ITEM = registerItem(CONTROLLER_REG_NAME, () -> new BlockItemBase(CONTROLLER, new Properties(), ModItems.CREATIVE_TAB));
 
 	private static final String STORAGE_LINK_REG_NAME = "storage_link";
 	public static final StorageLinkBlock STORAGE_LINK = register(STORAGE_LINK_REG_NAME, StorageLinkBlock::new);
-	public static final BlockItemBase STORAGE_LINK_ITEM = registerItem(STORAGE_LINK_REG_NAME, () -> new BlockItemBase(STORAGE_LINK, new Properties()));
+	public static final BlockItemBase STORAGE_LINK_ITEM = registerItem(STORAGE_LINK_REG_NAME, () -> new BlockItemBase(STORAGE_LINK, new Properties(), ModItems.CREATIVE_TAB));
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//
@@ -277,33 +275,33 @@ public class ModBlocks {
 	//
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public static final SimpleCraftingRecipeSerializer<?> STORAGE_DYE_RECIPE_SERIALIZER = registerRecipeSerializer("storage_dye", () -> new SimpleCraftingRecipeSerializer<>(StorageDyeRecipe::new));
+	public static final SimpleRecipeSerializer<?> STORAGE_DYE_RECIPE_SERIALIZER = registerRecipeSerializer("storage_dye", () -> new SimpleRecipeSerializer<>(StorageDyeRecipe::new));
 	public static final RecipeSerializer<?> STORAGE_TIER_UPGRADE_RECIPE_SERIALIZER = registerRecipeSerializer("storage_tier_upgrade", StorageTierUpgradeRecipe.Serializer::new);
 	public static final RecipeSerializer<?> STORAGE_TIER_UPGRADE_SHAPELESS_RECIPE_SERIALIZER = registerRecipeSerializer("storage_tier_upgrade_shapeless", StorageTierUpgradeShapelessRecipe.Serializer::new);
 	public static final RecipeSerializer<?> SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER = registerRecipeSerializer("shulker_box_from_chest", ShulkerBoxFromChestRecipe.Serializer::new);
-	public static final SimpleCraftingRecipeSerializer<?> FLAT_TOP_BARREL_TOGGLE_RECIPE_SERIALIZER = registerRecipeSerializer("flat_top_barrel_toggle", () -> new SimpleCraftingRecipeSerializer<>(FlatTopBarrelToggleRecipe::new));
-	public static final SimpleCraftingRecipeSerializer<?> BARREL_MATERIAL_RECIPE_SERIALIZER = registerRecipeSerializer("barrel_material", () -> new SimpleCraftingRecipeSerializer<>(BarrelMaterialRecipe::new));
+	public static final SimpleRecipeSerializer<?> FLAT_TOP_BARREL_TOGGLE_RECIPE_SERIALIZER = registerRecipeSerializer("flat_top_barrel_toggle", () -> new SimpleRecipeSerializer<>(FlatTopBarrelToggleRecipe::new));
+	public static final SimpleRecipeSerializer<?> BARREL_MATERIAL_RECIPE_SERIALIZER = registerRecipeSerializer("barrel_material", () -> new SimpleRecipeSerializer<>(BarrelMaterialRecipe::new));
 
 
 	// Register
 	public static <T extends Block> T register(String id, Supplier<T> supplier) {
 		T block = supplier.get();
 		BLOCKS.put(SophisticatedStorage.getRL(id), block);
-		return Registry.register(BuiltInRegistries.BLOCK, SophisticatedStorage.getRL(id), block);
+		return Registry.register(Registry.BLOCK, SophisticatedStorage.getRL(id), block);
 	}
 	public static <T extends Item> T registerItem(String id, Supplier<T> supplier) {
 		T item = supplier.get();
 		ITEMS.put(SophisticatedStorage.getRL(id), item);
-		return Registry.register(BuiltInRegistries.ITEM, SophisticatedStorage.getRL(id), item);
+		return Registry.register(Registry.ITEM, SophisticatedStorage.getRL(id), item);
 	}
 	public static <T extends MenuType<?>> T registerMenuType(String id, Supplier<T> supplier) {
-		return Registry.register(BuiltInRegistries.MENU, SophisticatedStorage.getRL(id), supplier.get());
+		return Registry.register(Registry.MENU, SophisticatedStorage.getRL(id), supplier.get());
 	}
 	public static <T extends BlockEntityType<?>> T registerEntityType(String id, Supplier<T> supplier) {
-		return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, SophisticatedStorage.getRL(id), supplier.get());
+		return Registry.register(Registry.BLOCK_ENTITY_TYPE, SophisticatedStorage.getRL(id), supplier.get());
 	}
 	public static <T extends RecipeSerializer<?>> T registerRecipeSerializer(String id, Supplier<T> supplier) {
-		return Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, SophisticatedStorage.getRL(id), supplier.get());
+		return Registry.register(Registry.RECIPE_SERIALIZER, SophisticatedStorage.getRL(id), supplier.get());
 	}
 
 	public static void register() {

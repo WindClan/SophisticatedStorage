@@ -1,6 +1,6 @@
 package net.p3pp3rf1y.sophisticatedstorage.upgrades.compression;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -45,7 +45,7 @@ public class CompressionUpgradeConfig {
 	}
 
 	private static String getDecompressibleEntry(Item fromItem, int count, Item toItem) {
-		return BuiltInRegistries.ITEM.getKey(fromItem) + "=" + count + "x" + BuiltInRegistries.ITEM.getKey(toItem);
+		return Registry.ITEM.getKey(fromItem) + "=" + count + "x" + Registry.ITEM.getKey(toItem);
 	}
 
 	public Optional<RecipeHelper.UncompactingResult> getDecompressionResult(Item item) {
@@ -55,9 +55,9 @@ public class CompressionUpgradeConfig {
 			additionalDecompressibleItems.get().forEach(decompressibleItem -> {
 				Matcher matcher = pattern.matcher(decompressibleItem);
 				if (matcher.find()) {
-					Item fromItem = BuiltInRegistries.ITEM.get(new ResourceLocation(matcher.group(1)));
+					Item fromItem = Registry.ITEM.get(new ResourceLocation(matcher.group(1)));
 					int count = Integer.parseInt(matcher.group(2));
-					Item toItem = BuiltInRegistries.ITEM.get(new ResourceLocation(matcher.group(3)));
+					Item toItem = Registry.ITEM.get(new ResourceLocation(matcher.group(3)));
 					if (fromItem != null && toItem != null && (count == 4 || count == 9)) {
 						additionalDecompressibleItemsMap.put(fromItem, new RecipeHelper.UncompactingResult(toItem, count == 4 ? RecipeHelper.CompactingShape.TWO_BY_TWO_UNCRAFTABLE : RecipeHelper.CompactingShape.THREE_BY_THREE_UNCRAFTABLE));
 					}

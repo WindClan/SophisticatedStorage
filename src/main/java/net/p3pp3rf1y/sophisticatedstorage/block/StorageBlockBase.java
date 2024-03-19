@@ -1,14 +1,13 @@
 package net.p3pp3rf1y.sophisticatedstorage.block;
 
-import com.mojang.math.Axis;
-import org.joml.Vector3f;
+import com.mojang.math.Vector3f;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -33,18 +32,16 @@ import net.p3pp3rf1y.sophisticatedcore.renderdata.RenderInfo;
 import net.p3pp3rf1y.sophisticatedcore.renderdata.UpgradeRenderDataType;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeHandler;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeItemBase;
-import net.p3pp3rf1y.sophisticatedcore.util.BlockBase;
 import net.p3pp3rf1y.sophisticatedcore.util.InventoryHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.RegistryHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.WorldHelper;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
-public abstract class StorageBlockBase extends BlockBase implements IStorageBlock, ISneakItemInteractionBlock, EntityBlock {
+public abstract class StorageBlockBase extends Block implements IStorageBlock, ISneakItemInteractionBlock, EntityBlock {
 	public static final BooleanProperty TICKING = BooleanProperty.create("ticking");
 	protected final Supplier<Integer> numberOfInventorySlotsSupplier;
 	protected final Supplier<Integer> numberOfUpgradeSlotsSupplier;
@@ -57,11 +54,6 @@ public abstract class StorageBlockBase extends BlockBase implements IStorageBloc
 
 	@Override
 	public abstract StorageBlockEntity newBlockEntity(BlockPos pos, BlockState state);
-
-	@Override
-	public void addCreativeTabItems(Consumer<ItemStack> itemConsumer) {
-		itemConsumer.accept(new ItemStack(this));
-	}
 
 	@Nullable
 	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> typePassedIn, BlockEntityType<E> typeExpected, BlockEntityTicker<? super E> blockEntityTicker) {
@@ -77,10 +69,10 @@ public abstract class StorageBlockBase extends BlockBase implements IStorageBloc
 	}
 
 	private static Vector3f getMiddleFacePoint(BlockPos pos, Direction facing, Vector3f vector) {
-		Vector3f point = new Vector3f(vector);
+		Vector3f point = vector.copy();
 		point.add(0, 0, 0.6f);
-		point.rotate(Axis.XP.rotationDegrees(-90.0F));
-		point.rotate(facing.getRotation());
+		point.transform(Vector3f.XP.rotationDegrees(-90.0F));
+		point.transform(facing.getRotation());
 		point.add(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
 		return point;
 	}
@@ -229,7 +221,7 @@ public abstract class StorageBlockBase extends BlockBase implements IStorageBloc
 	}
 
 	private static boolean isStorageUpgrade(ItemStack itemInHand) {
-		return itemInHand.getItem() instanceof UpgradeItemBase<?> upgradeItem && RegistryHelper.getRegistryName(BuiltInRegistries.ITEM, upgradeItem).map(r -> r.getNamespace().equals(SophisticatedStorage.ID)).orElse(false);
+		return itemInHand.getItem() instanceof UpgradeItemBase<?> upgradeItem && RegistryHelper.getRegistryName(Registry.ITEM, upgradeItem).map(r -> r.getNamespace().equals(SophisticatedStorage.ID)).orElse(false);
 	}
 
 	public boolean tryAddSingleUpgrade(Player player, InteractionHand hand, StorageBlockEntity b, ItemStack itemInHand) {

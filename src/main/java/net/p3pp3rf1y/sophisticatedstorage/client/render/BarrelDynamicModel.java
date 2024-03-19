@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,13 +24,13 @@ public class BarrelDynamicModel extends BarrelDynamicModelBase<BarrelDynamicMode
 	}
 
 	@Override
-	protected BarrelBakedModelBase instantiateBakedModel(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
+	protected BarrelBakedModelBase instantiateBakedModel(ModelBakery baker, Function<Material, TextureAtlasSprite> spriteGetter, Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
 		return new BarrelBakedModel(baker, spriteGetter, woodModelParts, flatTopModel, woodDynamicBakingData, woodPartitionedModelParts);
 	}
 
 	private static class BarrelBakedModel extends BarrelBakedModelBase {
-		public BarrelBakedModel(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
-			super(baker, spriteGetter, woodModelParts, flatTopModel, woodDynamicBakingData, woodPartitionedModelParts);
+		public BarrelBakedModel(ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
+			super(bakery, spriteGetter, woodModelParts, flatTopModel, woodDynamicBakingData, woodPartitionedModelParts);
 		}
 
 		@Override

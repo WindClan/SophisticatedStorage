@@ -2,7 +2,6 @@ package net.p3pp3rf1y.sophisticatedstorage.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
@@ -106,7 +105,9 @@ public class ShulkerBoxItem extends StorageBlockItem implements IStashStorageIte
 			try (Transaction ctx = Transaction.openOuter()) {
 				long inserted = wrapper.getInventoryForUpgradeProcessing().insert(ItemVariant.of(stack), stack.getCount(), ctx);
 				ctx.commit();
-				return stack.copyWithCount(stack.getCount() - (int) inserted);
+				ItemStack copy = stack.copy();
+				copy.setCount(stack.getCount() - (int) inserted);
+				return copy;
 			}
 		}).orElse(stack);
 	}
@@ -114,7 +115,7 @@ public class ShulkerBoxItem extends StorageBlockItem implements IStashStorageIte
 	@Override
 	public StashResult getItemStashable(ItemStack storageStack, ItemStack stack) {
 		return CapabilityStorageWrapper.get(storageStack).map(wrapper -> {
-			if (StorageUtil.simulateInsert(wrapper.getInventoryForUpgradeProcessing(), ItemVariant.of(stack), stack.getCount(), null) == 0) {
+			if (wrapper.getInventoryForUpgradeProcessing().simulateInsert(ItemVariant.of(stack), stack.getCount(), null) == 0) {
 				return StashResult.NO_SPACE;
 			}
 			if (wrapper.getInventoryHandler().getSlotTracker().getItems().contains(stack.getItem()) || wrapper.getSettingsHandler().getTypeCategory(MemorySettingsCategory.class).matchesFilter(stack)) {

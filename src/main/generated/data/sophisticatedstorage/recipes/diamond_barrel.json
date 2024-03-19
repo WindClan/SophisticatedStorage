@@ -1,0 +1,25 @@
+{
+  "type": "sophisticatedstorage:storage_tier_upgrade",
+  "fabric:load_conditions": [
+    {
+      "condition": "sophisticatedcore:item_enabled",
+      "itemRegistryName": "sophisticatedstorage:diamond_barrel"
+    }
+  ],
+  "key": {
+    "D": {
+      "tag": "c:diamonds"
+    },
+    "S": {
+      "item": "sophisticatedstorage:gold_barrel"
+    }
+  },
+  "pattern": [
+    "DDD",
+    "DSD",
+    "DDD"
+  ],
+  "result": {
+    "item": "sophisticatedstorage:diamond_barrel"
+  }
+}

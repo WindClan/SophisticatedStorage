@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
@@ -24,6 +23,7 @@ import net.p3pp3rf1y.sophisticatedcore.upgrades.ContentsFilterLogic;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.FilterLogic;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.ITickableUpgrade;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.UpgradeWrapperBase;
+import net.p3pp3rf1y.sophisticatedcore.util.InventoryHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.NBTHelper;
 import net.p3pp3rf1y.sophisticatedstorage.block.StorageBlockBase;
 import net.p3pp3rf1y.sophisticatedstorage.block.VerticalFacing;
@@ -180,11 +180,14 @@ public class HopperUpgradeWrapper extends UpgradeWrapperBase<HopperUpgradeWrappe
 	}
 
 	private boolean moveItems(Storage<ItemVariant> fromHandler, Storage<ItemVariant> toHandler, FilterLogic filterLogic) {
-		for (StorageView<ItemVariant> view : fromHandler.nonEmptyViews()) {
+		for (StorageView<ItemVariant> view : InventoryHelper.getNonEmpty(fromHandler)) {
 			ItemVariant resource = view.getResource();
 			ItemStack slotStack = resource.toStack((int) view.getAmount());
 			if (!slotStack.isEmpty() && filterLogic.matchesFilter(slotStack)) {
-				long maxExtracted = StorageUtil.simulateExtract(view, resource, upgradeItem.getMaxTransferStackSize(), null);
+				long maxExtracted;
+				try (Transaction simulation = Transaction.openOuter()) {
+					maxExtracted = view.extract(resource, upgradeItem.getMaxTransferStackSize(), simulation);
+				}
 
 				try (Transaction transferTransaction = Transaction.openOuter()) {
 					long accepted = toHandler.insert(resource, maxExtracted, transferTransaction);

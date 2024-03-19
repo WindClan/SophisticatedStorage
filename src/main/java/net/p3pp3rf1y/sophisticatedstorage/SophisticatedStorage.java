@@ -29,8 +29,8 @@ public class SophisticatedStorage implements ModInitializer {
 
 		commonEventHandler.registerHandlers();
 
-		ModBlocks.register();
 		ModItems.register();
+		ModBlocks.register();
 
 		CapabilityStorageWrapper.register();
 

@@ -39,6 +39,7 @@ import net.p3pp3rf1y.sophisticatedstorage.block.StorageWrapper;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockEntity;
 import net.p3pp3rf1y.sophisticatedstorage.client.gui.StorageTranslationHelper;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
+import net.p3pp3rf1y.sophisticatedstorage.init.ModItems;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ public class StorageTierUpgradeItem extends ItemBase {
 	}
 
 	public StorageTierUpgradeItem(TierUpgrade tier, boolean hasTooltip) {
-		super(new Properties());
+		super(new Properties(), ModItems.CREATIVE_TAB);
 		this.tier = tier;
 		this.hasTooltip = hasTooltip;
 	}

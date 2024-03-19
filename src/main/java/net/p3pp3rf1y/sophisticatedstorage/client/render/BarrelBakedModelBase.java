@@ -5,10 +5,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.datafixers.util.Either;
-import com.mojang.math.Axis;
 import com.mojang.math.Transformation;
-import org.joml.Vector3f;
+import com.mojang.math.Vector3f;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.Minecraft;
@@ -23,17 +23,16 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -59,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -74,7 +74,7 @@ import static net.p3pp3rf1y.sophisticatedstorage.client.render.DisplayItemRender
 import static net.p3pp3rf1y.sophisticatedstorage.client.render.DisplayItemRenderer.SMALL_3D_ITEM_SCALE;
 import static net.p3pp3rf1y.sophisticatedstorage.client.render.DisplayItemRenderer.getNorthBasedRotation;
 
-public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
+public abstract class BarrelBakedModelBase implements BakedModel, FabricBakedModel, IDataModel {
 	private static final RenderContext.QuadTransform MOVE_TO_CORNER = QuadTransformers.applying(new Transformation(new Vector3f(-.5f, -.5f, -.5f), null, null, null));
 	public static final Map<Direction, RenderContext.QuadTransform> DIRECTION_ROTATES = Map.of(
 			Direction.UP, getDirectionRotationTransform(Direction.UP),
@@ -120,7 +120,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 		BAKED_QUADS_CACHE.invalidateAll();
 	}
 
-	private final ModelBaker baker;
+	private final ModelBakery baker;
 	private final Function<Material, TextureAtlasSprite> spriteGetter;
 	protected final Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts;
 
@@ -140,7 +140,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 	private final Cache<Integer, BakedModel> dynamicBakedModelCache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES).build();
 	private Object modelData;
 
-	protected BarrelBakedModelBase(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
+	protected BarrelBakedModelBase(ModelBakery baker, Function<Material, TextureAtlasSprite> spriteGetter, Map<String, Map<BarrelModelPart, BakedModel>> woodModelParts, @Nullable BakedModel flatTopModel, Map<String, Map<DynamicBarrelBakingData.DynamicPart, DynamicBarrelBakingData>> woodDynamicBakingData, Map<String, Map<BarrelModelPart, BakedModel>> woodPartitionedModelParts) {
 		this.baker = baker;
 		this.spriteGetter = spriteGetter;
 		this.woodModelParts = woodModelParts;
@@ -174,7 +174,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 
 	@SuppressWarnings("java:S1172") //state used in override
 	protected void rotateDisplayItemFrontOffset(BlockState state, Direction dir, Vector3f frontOffset) {
-		frontOffset.rotate(getNorthBasedRotation(dir));
+		frontOffset.transform(getNorthBasedRotation(dir));
 	}
 
 	@SuppressWarnings("java:S1172") //state used in override
@@ -325,7 +325,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 			BarrelMaterial barrelMaterial = entry.getKey();
 			ResourceLocation blockName = entry.getValue();
 			TextureAtlasSprite sprite = RenderHelper.getSprite(blockName, spriteSide, rand);
-			Either<Material, String> material = Either.left(new Material(InventoryMenu.BLOCK_ATLAS, sprite.contents().name()));
+			Either<Material, String> material = Either.left(new Material(InventoryMenu.BLOCK_ATLAS, sprite.getName()));
 
 			for (BarrelMaterial childMaterial : barrelMaterial.getChildren()) {
 				materials.put(childMaterial.getSerializedName(), material);
@@ -359,7 +359,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 	}
 
 	private BlockState getDefaultBlockState(ResourceLocation blockName) {
-		Block block = BuiltInRegistries.BLOCK.get(blockName);
+		Block block = Registry.BLOCK.get(blockName);
 		return block != null ? block.defaultBlockState() : Blocks.AIR.defaultBlockState();
 	}
 
@@ -377,7 +377,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 		BarrelDynamicModelBase.BarrelModelPartDefinition baseModelPartDefinition = bakingData.modelPartDefinition();
 		return baseModelPartDefinition.modelLocation().map(modelLocation -> {
 			BlockModel baseModel = new CompositeElementsModel(modelLocation, materials);
-			baseModel.resolveParents(baker::getModel); //need to call resolveParents here to get parent models loaded which happens in that call
+			baseModel.getMaterials(baker::getModel, new HashSet<>()); //need to call getMaterials here to get parent models loaded which happens in that call
 			return baseModel.bake(baker, baseModel, spriteGetter, bakingData.modelState(), bakingData.modelLocation(), false);
 		}).orElse(Minecraft.getInstance().getModelManager().getMissingModel());
 	}
@@ -519,7 +519,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 		List<BakedQuad> quads = model.getQuads(null, dir, rand);
 
 		quads = QuadTransformers.process(MOVE_TO_CORNER, quads);
-		quads = QuadTransformers.process(QuadTransformers.applying(toTransformation(model.getTransforms().getTransform(ItemDisplayContext.FIXED))), quads);
+		quads = QuadTransformers.process(QuadTransformers.applying(toTransformation(model.getTransforms().getTransform(ItemTransforms.TransformType.FIXED))), quads);
 		if (!model.isGui3d()) {
 			if (displayItemCount == 1) {
 				quads = QuadTransformers.process(SCALE_BIG_2D_ITEM, quads);
@@ -557,7 +557,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 			return Transformation.identity();
 		}
 
-		return new Transformation(transform.translation, QuaternionHelper.quatFromXYZDegree(transform.rotation), transform.scale, null);
+		return new Transformation(transform.translation, QuaternionHelper.quatFromXYZDegree(transform.rotation, true), transform.scale, null);
 	}
 
 	protected abstract List<BakedQuad> rotateDisplayItemQuads(List<BakedQuad> quads, BlockState state);
@@ -604,7 +604,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 	}
 
 	private RenderContext.QuadTransform getDisplayRotation(int rotation) {
-		return DISPLAY_ROTATIONS.computeIfAbsent(rotation, r -> QuadTransformers.applying(new Transformation(null, Axis.ZP.rotationDegrees(rotation), null, null)));
+		return DISPLAY_ROTATIONS.computeIfAbsent(rotation, r -> QuadTransformers.applying(new Transformation(null, Vector3f.ZP.rotationDegrees(rotation), null, null)));
 	}
 
 	private void addTintableModelQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, List<BakedQuad> ret, boolean hasMainColor,

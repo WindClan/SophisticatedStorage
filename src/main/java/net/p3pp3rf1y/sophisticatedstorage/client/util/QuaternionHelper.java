@@ -1,14 +1,10 @@
 package net.p3pp3rf1y.sophisticatedstorage.client.util;
 
-import org.joml.Math;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 
 public class QuaternionHelper {
-    public static Quaternionf quatFromXYZDegree(Vector3f xyz) {
-        return quatFromXYZDegree(xyz.x, xyz.y, xyz.z);
-    }
-    public static Quaternionf quatFromXYZDegree(float x, float y, float z) {
-        return new Quaternionf().rotateXYZ(Math.toRadians(x), Math.toRadians(y), Math.toRadians(z));
+    public static Quaternion quatFromXYZDegree(Vector3f xyz, boolean degrees) {
+		return new Quaternion(xyz.x(), xyz.y(), xyz.z(), degrees);
     }
 }

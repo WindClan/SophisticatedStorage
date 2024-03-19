@@ -3,6 +3,7 @@ package net.p3pp3rf1y.sophisticatedstorage.client.render;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -13,7 +14,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BuiltInModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.SimpleBakedModel;
@@ -23,10 +23,12 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 
@@ -39,7 +41,7 @@ public class CompositeElementsModel extends BlockModel {
 	}
 
 	@Override
-	public BakedModel bake(ModelBaker baker, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location, boolean guiLight3d) {
+	public BakedModel bake(ModelBakery baker, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location, boolean guiLight3d) {
 		var particleSprite = spriteGetter.apply(getMaterial("particle"));
 		if (getRootModel() == ModelBakery.BLOCK_ENTITY_MARKER) {
 			return new BuiltInModel(getTransforms(), getOverrides(baker, model, spriteGetter), particleSprite, getGuiLight().lightLikeBlock());
@@ -66,18 +68,20 @@ public class CompositeElementsModel extends BlockModel {
 	}
 
 	@Override
-	public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter) {
-		super.resolveParents(modelGetter);
+	public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
+		Collection<Material> materials = super.getMaterials(unbakedModelGetter, unresolvedTextureReferences);
 
 		copyElementsFromAllIncludedModels();
 		copyTexturesFromAllIncludedModels();
+
+		return materials;
 	}
 
 	@SuppressWarnings("java:S1874") //need to call getElements even though deprecated
 	private void copyElementsFromAllIncludedModels() {
 		if (parent != null) {
 			elements.addAll(parent.getElements());
-			if (parent.getCustomGeometry() instanceof SimpleCompositeModel simpleCompositeModel) {
+			if (parent.getGeometry().getCustomGeometry() instanceof SimpleCompositeModel simpleCompositeModel) {
 				elements.addAll(simpleCompositeModel.getElements());
 			}
 		}
@@ -87,7 +91,7 @@ public class CompositeElementsModel extends BlockModel {
 	private void copyTexturesFromAllIncludedModels() {
 		if (parent != null) {
 			parent.textureMap.forEach(textureMap::putIfAbsent);
-			if (parent.getCustomGeometry() instanceof SimpleCompositeModel simpleCompositeModel) {
+			if (parent.getGeometry().getCustomGeometry() instanceof SimpleCompositeModel simpleCompositeModel) {
 				simpleCompositeModel.getTextures().forEach(textureMap::putIfAbsent);
 			}
 		}
