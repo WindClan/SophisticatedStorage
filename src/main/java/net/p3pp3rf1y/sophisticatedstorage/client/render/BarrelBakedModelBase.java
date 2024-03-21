@@ -144,7 +144,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, FabricBakedMod
 		this.baker = baker;
 		this.spriteGetter = spriteGetter;
 		this.woodModelParts = woodModelParts;
-		barrelItemOverrides = new BarrelItemOverrides(this, flatTopModel);
+		this.barrelItemOverrides = new BarrelItemOverrides(this, flatTopModel);
 		this.woodDynamicBakingData = woodDynamicBakingData;
 		this.woodPartitionedModelParts = woodPartitionedModelParts;
 	}
@@ -199,8 +199,12 @@ public abstract class BarrelBakedModelBase implements BakedModel, FabricBakedMod
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
 		modelData = null;
+		if (this.barrelItemOverrides != null) {
+			// need this here because of REI's fast entry rendering feature
+			// it is doing batched rendering and this collides with how item overrides are implemented here
+			this.barrelItemOverrides.resolve(this, stack, null, null, 0);
+		}
 		context.bakedModelConsumer().accept(this, null);
-
 	}
 
 	@Override
