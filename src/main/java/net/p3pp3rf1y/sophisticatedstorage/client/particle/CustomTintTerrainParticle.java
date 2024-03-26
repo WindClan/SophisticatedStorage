@@ -28,7 +28,7 @@ public class CustomTintTerrainParticle extends TerrainParticle {
 		bCol *= (color & 255) / 255.0F;
 	}
 
-	public Particle updateSprite(BlockState state, @Nullable BlockPos pos) {
+	public TerrainParticle updateSprite(BlockState state, @Nullable BlockPos pos) {
 		if (pos != null) {
 			BlockModelShaper shaper = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper();
 			BakedModel model = shaper.getBlockModel(state);
