@@ -1,5 +1,7 @@
 package net.p3pp3rf1y.sophisticatedstorage.client.particle;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -13,6 +15,8 @@ import net.p3pp3rf1y.sophisticatedstorage.block.BarrelBlock;
 
 import javax.annotation.Nullable;
 
+
+@Environment(EnvType.CLIENT)
 public class CustomTintTerrainParticle extends TerrainParticle {
 	public CustomTintTerrainParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, BlockState state, BlockPos pos) {
 		super(level, x, y, z, xSpeed, ySpeed, zSpeed, state);
@@ -28,7 +32,7 @@ public class CustomTintTerrainParticle extends TerrainParticle {
 		bCol *= (color & 255) / 255.0F;
 	}
 
-	public TerrainParticle updateSprite(BlockState state, @Nullable BlockPos pos) {
+	public Particle updateSprite(BlockState state, @Nullable BlockPos pos) {
 		if (pos != null) {
 			BlockModelShaper shaper = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper();
 			BakedModel model = shaper.getBlockModel(state);
@@ -38,15 +42,14 @@ public class CustomTintTerrainParticle extends TerrainParticle {
 		return this;
 	}
 
+	@Environment(EnvType.CLIENT)
 	public static class Factory implements ParticleProvider<CustomTintTerrainParticleData> {
 		@Nullable
 		@Override
 		public Particle createParticle(CustomTintTerrainParticleData type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			BlockPos pos = type.getPos();
 			BlockState state = type.getState();
-			CustomTintTerrainParticle particle = new CustomTintTerrainParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, state, pos);
-			particle.updateSprite(state, pos);
-			return particle;
+			return (new CustomTintTerrainParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, state, pos).updateSprite(state, pos));
 		}
 	}
 }
