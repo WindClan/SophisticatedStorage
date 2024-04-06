@@ -148,7 +148,7 @@ public class BarrelBlock extends WoodStorageBlockBase {
 				d0 = i + aabb.maxX + 0.1F;
 			}
 
-			manager.add((new CustomTintTerrainParticle(clientLevel, d0, d1, d2, 0.0D, 0.0D, 0.0D, state, pos).updateSprite(state, pos)).setPower(0.2F).scale(0.6F));
+			manager.add((new CustomTintTerrainParticle(clientLevel, d0, d1, d2, 0.0D, 0.0D, 0.0D, state, pos).sophisticatedCore$updateSprite(state, pos)).setPower(0.2F).scale(0.6F));
 		}
 
 		return true;
@@ -179,7 +179,7 @@ public class BarrelBlock extends WoodStorageBlockBase {
 						double d7 = d4 * d1 + minX;
 						double d8 = d5 * d2 + minY;
 						double d9 = d6 * d3 + minZ;
-						manager.add(new CustomTintTerrainParticle(clientLevel, pos.getX() + d7, pos.getY() + d8, pos.getZ() + d9, d4 - 0.5D, d5 - 0.5D, d6 - 0.5D, state, pos).updateSprite(state, pos));
+						manager.add(new CustomTintTerrainParticle(clientLevel, pos.getX() + d7, pos.getY() + d8, pos.getZ() + d9, d4 - 0.5D, d5 - 0.5D, d6 - 0.5D, state, pos).sophisticatedCore$updateSprite(state, pos));
 					}
 				}
 			}

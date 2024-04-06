@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 
 import io.github.fabricators_of_create.porting_lib.models.geometry.IGeometryLoader;
 import io.github.fabricators_of_create.porting_lib.models.geometry.IUnbakedGeometry;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -25,6 +24,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.p3pp3rf1y.sophisticatedcore.client.render.CustomParticleIcon;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
 import net.p3pp3rf1y.sophisticatedstorage.block.ShulkerBoxBlockEntity;
 
@@ -43,7 +43,7 @@ public class ShulkerBoxDynamicModel implements IUnbakedGeometry<ShulkerBoxDynami
 		return new ShulkerBoxBakedModel();
 	}
 
-	private static class ShulkerBoxBakedModel implements BakedModel, IDataModel {
+	private static class ShulkerBoxBakedModel implements BakedModel, CustomParticleIcon {
 		@Override
 		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
 			return Collections.emptyList();
@@ -82,7 +82,7 @@ public class ShulkerBoxDynamicModel implements IUnbakedGeometry<ShulkerBoxDynami
 
 		@Override
 		public TextureAtlasSprite getParticleIcon(BlockState state, BlockAndTintGetter blockView, BlockPos pos) {
-			Object data = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
+			Object data = blockView.getBlockEntityRenderData(pos);
 			if (data instanceof ShulkerBoxBlockEntity.ModelData sbd) {
 				ResourceLocation texture = TINTABLE_BREAK_TEXTURE;
 				if (Boolean.FALSE.equals(sbd.hasMainColor())) {

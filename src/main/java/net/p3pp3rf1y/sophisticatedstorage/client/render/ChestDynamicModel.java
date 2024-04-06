@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 
 import io.github.fabricators_of_create.porting_lib.models.geometry.IGeometryLoader;
 import io.github.fabricators_of_create.porting_lib.models.geometry.IUnbakedGeometry;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -25,6 +24,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.p3pp3rf1y.sophisticatedcore.client.render.CustomParticleIcon;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockEntity;
@@ -55,7 +55,7 @@ public class ChestDynamicModel implements IUnbakedGeometry<ChestDynamicModel> {
 		return new ChestBakedModel();
 	}
 
-	private static class ChestBakedModel implements BakedModel, IDataModel {
+	private static class ChestBakedModel implements BakedModel, CustomParticleIcon {
 		@Override
 		public ItemTransforms getTransforms() {
 			return ItemTransforms.NO_TRANSFORMS;
@@ -96,7 +96,7 @@ public class ChestDynamicModel implements IUnbakedGeometry<ChestDynamicModel> {
 
 		@Override
 		public TextureAtlasSprite getParticleIcon(BlockState state, BlockAndTintGetter blockView, BlockPos pos) {
-			Object attachment = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
+			Object attachment = blockView.getBlockEntityRenderData(pos);
 			if (attachment instanceof WoodStorageBlockEntity.ModelData data) {
 				ResourceLocation texture = TINTABLE_BREAK_TEXTURE;
 				if (Boolean.FALSE.equals(data.hasMainColor()) && data.woodName() != null && WOOD_BREAK_TEXTURES.containsKey(data.woodName())) {
