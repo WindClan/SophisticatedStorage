@@ -81,7 +81,7 @@ public class StorageTierUpgradeItem extends ItemBase {
 		BlockPos pos = context.getClickedPos();
 		BlockState state = level.getBlockState(pos);
 		Player player = context.getPlayer();
-		return tryUpgradeStorage(context.getItemInHand(), level, pos, state, player);
+		return tryUpgradeStorage(stack, level, pos, state, player);
 	}
 
 	public InteractionResult tryUpgradeStorage(ItemStack stack, Level level, BlockPos pos, BlockState state, @Nullable Player player) {
@@ -226,7 +226,7 @@ public class StorageTierUpgradeItem extends ItemBase {
 		}
 	}
 
-	public abstract static class TierUpgradeDefinition<B extends BlockEntity> {
+	private abstract static class TierUpgradeDefinition<B extends BlockEntity> {
 		private final List<Property<?>> propertiesToCopy;
 		private final Class<B> blockEntityClass;
 		private final Predicate<B> isUpgradingBlocked;

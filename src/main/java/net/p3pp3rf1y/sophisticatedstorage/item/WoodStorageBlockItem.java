@@ -101,23 +101,6 @@ public class WoodStorageBlockItem extends StorageBlockItem {
 				.flatMap(woodType -> WoodType.values().filter(wt -> wt.name().equals(woodType)).findFirst());
 	}
 
-	public static ItemStack setWoodType(ItemStack storageStack, WoodType woodType) {
-		storageStack.getOrCreateTag().putString(WOOD_TYPE_TAG, woodType.name());
-		return storageStack;
-	}
-
-	@Override
-	public Component getName(ItemStack stack) {
-		return getDisplayName(getDescriptionId(), getWoodType(stack).orElse(null));
-	}
-
-	public static Component getDisplayName(String descriptionId, @Nullable WoodType woodType) {
-		if (woodType == null) {
-			return Component.translatable(descriptionId, "", "");
-		}
-		return Component.translatable(descriptionId, Component.translatable("wood_name.sophisticatedstorage." + woodType.name().toLowerCase(Locale.ROOT)), " ");
-	}
-
 	public static StorageWrapper initWrapper(ItemStack stack) {
 		UUID uuid = NBTHelper.getUniqueId(stack, "uuid").orElse(null);
 		StorageWrapper storageWrapper = new StackStorageWrapper(stack) {
@@ -133,5 +116,22 @@ public class WoodStorageBlockItem extends StorageBlockItem {
 		}
 
 		return storageWrapper;
+	}
+
+	public static ItemStack setWoodType(ItemStack storageStack, WoodType woodType) {
+		storageStack.getOrCreateTag().putString(WOOD_TYPE_TAG, woodType.name());
+		return storageStack;
+	}
+
+	@Override
+	public Component getName(ItemStack stack) {
+		return getDisplayName(getDescriptionId(), getWoodType(stack).orElse(null));
+	}
+
+	public static Component getDisplayName(String descriptionId, @Nullable WoodType woodType) {
+		if (woodType == null) {
+			return Component.translatable(descriptionId, "", "");
+		}
+		return Component.translatable(descriptionId, Component.translatable("wood_name.sophisticatedstorage." + woodType.name().toLowerCase(Locale.ROOT)), " ");
 	}
 }

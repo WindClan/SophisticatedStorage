@@ -112,7 +112,6 @@ public class ChestDynamicModel implements IUnbakedGeometry<ChestDynamicModel> {
 		public ItemOverrides getOverrides() {
 			return new ItemOverrides() {};
 		}
-
 	}
 
 	public static final class Loader implements IGeometryLoader<ChestDynamicModel> {

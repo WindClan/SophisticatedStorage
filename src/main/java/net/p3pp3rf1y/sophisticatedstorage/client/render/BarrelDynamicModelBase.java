@@ -141,7 +141,7 @@ public abstract class BarrelDynamicModelBase<T extends BarrelDynamicModelBase<T>
 			ImmutableMap.Builder<BarrelModelPart, BakedModel> partBuilder = ImmutableMap.builder();
 			partModels.forEach((part, model) -> {
 				model.resolveParents(baker::getModel);
-				int hash = getBakedModelHash(model, baker, modelTransform, part);
+				int hash = getBakedModelHash(model, modelTransform, part);
 				BakedModel bakedModel = BAKED_PART_MODELS.computeIfAbsent(hash, h -> model.bake(baker, spriteGetter, modelTransform, modelLocation));
 				if (bakedModel != null) {
 					partBuilder.put(part, bakedModel);
@@ -175,7 +175,7 @@ public abstract class BarrelDynamicModelBase<T extends BarrelDynamicModelBase<T>
 	}
 
 	@SuppressWarnings("java:S5803") //need to use textureMap to calculate hash based on it as well
-	private int getBakedModelHash(UnbakedModel model, ModelBaker baker, ModelState modelTransform, BarrelModelPart part) {
+	private int getBakedModelHash(UnbakedModel model, ModelState modelTransform, BarrelModelPart part) {
 		int hash = 0;
 		hash = part.hashCode();
 		for (ResourceLocation dependency : model.getDependencies()) {

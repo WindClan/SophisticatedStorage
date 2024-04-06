@@ -103,8 +103,8 @@ public abstract class StorageBlockEntity extends BlockEntity
 
 			@Override
 			protected void onUpgradeRefresh() {
-				if (!isDroppingContents && getLevel() != null && !getLevel().isClientSide && getBlockState().getBlock() instanceof IStorageBlock storageBlock) {
-					storageBlock.setTicking(getLevel(), getBlockPos(), getBlockState(), !storageWrapper.getUpgradeHandler().getWrappersThatImplement(ITickableUpgrade.class).isEmpty());
+				if (!isDroppingContents && level != null && !level.isClientSide && getBlockState().getBlock() instanceof IStorageBlock storageBlock) {
+					storageBlock.setTicking(level, getBlockPos(), getBlockState(), !storageWrapper.getUpgradeHandler().getWrappersThatImplement(ITickableUpgrade.class).isEmpty());
 				}
 			}
 
@@ -572,7 +572,7 @@ public abstract class StorageBlockEntity extends BlockEntity
 			return;
 		}
 		//noinspection DataFlowIssue
-		storageWrapper.getUpgradeHandler().getWrappersThatImplement(INeighborChangeListenerUpgrade.class).forEach(upgrade -> upgrade.onNeighborChange(getLevel(), worldPosition, direction));
+		storageWrapper.getUpgradeHandler().getWrappersThatImplement(INeighborChangeListenerUpgrade.class).forEach(upgrade -> upgrade.onNeighborChange(level, worldPosition, direction));
 	}
 
 	@Nullable

@@ -1,11 +1,9 @@
 package net.p3pp3rf1y.sophisticatedstorage.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemStack;
 import net.p3pp3rf1y.sophisticatedcore.client.render.ClientStorageContentsTooltipBase;
 import net.p3pp3rf1y.sophisticatedstorage.common.CapabilityStorageWrapper;
@@ -25,8 +23,8 @@ public class ClientStorageContentsTooltip extends ClientStorageContentsTooltipBa
 	}
 
 	@Override
-	public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer) {
-		CapabilityStorageWrapper.get(storageItem).ifPresent(wrapper -> renderTooltip(wrapper, font, x, y, poseStack, itemRenderer));
+	public void renderImage(Font font, int leftX, int topY, GuiGraphics guiGraphics) {
+		CapabilityStorageWrapper.get(storageItem).ifPresent(wrapper -> renderTooltip(wrapper, font, leftX, topY, guiGraphics));
 	}
 
 	public ClientStorageContentsTooltip(StorageContentsTooltip tooltip) {

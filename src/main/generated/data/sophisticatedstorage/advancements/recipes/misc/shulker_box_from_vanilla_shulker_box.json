@@ -17,5 +17,6 @@
     "recipes": [
       "minecraft:shulker_box_from_vanilla_shulker_box"
     ]
-  }
+  },
+  "sends_telemetry_event": true
 }

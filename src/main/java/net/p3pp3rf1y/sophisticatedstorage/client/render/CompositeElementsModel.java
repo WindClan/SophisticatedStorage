@@ -39,20 +39,20 @@ public class CompositeElementsModel extends BlockModel {
 	}
 
 	@Override
-	public BakedModel bake(ModelBaker baker, BlockModel model, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location, boolean guiLight3d) {
+	public BakedModel bake(ModelBaker modelBaker, BlockModel owner, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ResourceLocation modelLocation, boolean guiLight3d) {
 		var particleSprite = spriteGetter.apply(getMaterial("particle"));
 		if (getRootModel() == ModelBakery.BLOCK_ENTITY_MARKER) {
-			return new BuiltInModel(getTransforms(), getOverrides(baker, model, spriteGetter), particleSprite, getGuiLight().lightLikeBlock());
+			return new BuiltInModel(getTransforms(), getOverrides(modelBaker, owner, spriteGetter), particleSprite, getGuiLight().lightLikeBlock());
 		}
 
-		ItemOverrides overrides = getOverrides(baker, model, spriteGetter);
+		ItemOverrides overrides = getOverrides(modelBaker, owner, spriteGetter);
 		ItemTransforms transforms = this.getTransforms();
 		var modelBuilder = SimpleCompositeModel.Baked.builder(this.hasAmbientOcclusion(), false, this.getGuiLight().lightLikeBlock(), particleSprite, overrides, transforms);
 		for (BlockElement element : getElements()) {
 			element.faces.forEach((side, face) -> {
 				var sprite = spriteGetter.apply(this.getMaterial(face.texture));
 				var simpleModelBuilder = new SimpleBakedModel.Builder(this.hasAmbientOcclusion(), this.getGuiLight().lightLikeBlock(), false, transforms, overrides).particle(sprite);
-				simpleModelBuilder.addUnculledFace(BlockModel.FACE_BAKERY.bakeQuad(element.from, element.to, face, sprite, side, state, element.rotation, element.shade, location));
+				simpleModelBuilder.addUnculledFace(BlockModel.FACE_BAKERY.bakeQuad(element.from, element.to, face, sprite, side, modelState, element.rotation, element.shade, modelLocation));
 				modelBuilder.addLayer(simpleModelBuilder.build());
 			});
 		}

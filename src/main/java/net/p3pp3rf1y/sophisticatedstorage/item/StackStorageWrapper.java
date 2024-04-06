@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nullable;
 
-public abstract class StackStorageWrapper extends StorageWrapper {
+abstract class StackStorageWrapper extends StorageWrapper {
 	private static final String CONTENTS_TAG = "contents";
 	private final ItemStack storageStack;
 

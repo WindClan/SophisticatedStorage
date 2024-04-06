@@ -28,6 +28,7 @@ import net.p3pp3rf1y.sophisticatedcore.util.NBTHelper;
 import net.p3pp3rf1y.sophisticatedstorage.block.StorageBlockBase;
 import net.p3pp3rf1y.sophisticatedstorage.block.VerticalFacing;
 import net.p3pp3rf1y.sophisticatedstorage.common.gui.BlockSide;
+import net.p3pp3rf1y.sophisticatedstorage.upgrades.INeighborChangeListenerUpgrade;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -38,7 +39,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 public class HopperUpgradeWrapper extends UpgradeWrapperBase<HopperUpgradeWrapper, HopperUpgradeItem>
-		implements ITickableUpgrade {
+		implements ITickableUpgrade, INeighborChangeListenerUpgrade {
 
 	private Set<Direction> pullDirections = new LinkedHashSet<>();
 	private Set<Direction> pushDirections = new LinkedHashSet<>();
@@ -196,6 +197,13 @@ public class HopperUpgradeWrapper extends UpgradeWrapperBase<HopperUpgradeWrappe
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void onNeighborChange(Level level, BlockPos pos, Direction direction) {
+		if (pushDirections.contains(direction) || pullDirections.contains(direction)) {
+			handlerCache.put(direction, BlockApiCache.create(ItemStorage.SIDED, (ServerLevel) level, pos.relative(direction)));
+		}
 	}
 
 	private Optional<Storage<ItemVariant>> getItemHandler(Level level, BlockPos pos, Direction direction) {

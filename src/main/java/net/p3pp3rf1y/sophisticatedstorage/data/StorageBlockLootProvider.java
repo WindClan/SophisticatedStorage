@@ -81,7 +81,9 @@ public class StorageBlockLootProvider extends LootTableProvider {
 		}
 
 		public LootTable.Builder dropBlock(ItemLike pItem) {
-			LootPool.Builder pool = applyExplosionCondition(pItem, LootPool.lootPool().name("main").setRolls(ConstantValue.exactly(1.0F))
+			LootPool.Builder pool = applyExplosionCondition(pItem, LootPool.lootPool()
+					.name("main")
+					.setRolls(ConstantValue.exactly(1.0F))
 					.add(LootItem.lootTableItem(pItem))
 			);
 			return LootTable.lootTable().withPool(pool);

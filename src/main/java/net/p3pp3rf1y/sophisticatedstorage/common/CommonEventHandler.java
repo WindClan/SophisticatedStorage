@@ -106,12 +106,11 @@ public class CommonEventHandler {
 		sendPlayerSettingsToClient(newPlayer);
 	}
 
-	private boolean onBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
+	private boolean onBlockBreak(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
 		if (!(state.getBlock() instanceof WoodStorageBlockBase) || player.isShiftKeyDown()) {
 			return true;
 		}
 
-		Level level = player.getLevel();
 		return WorldHelper.getBlockEntity(level, pos, WoodStorageBlockEntity.class).map(wbe -> {
 			if (wbe.isPacked()) {
 				return true;

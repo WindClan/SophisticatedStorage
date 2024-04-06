@@ -193,7 +193,8 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 	@Override
 	public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
 		modelData = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
-		context.bakedModelConsumer().accept(this, state);
+		context.fallbackConsumer().accept(this);
+		//context.bakedModelConsumer().accept(this, state);
 	}
 
 	@Override
@@ -204,7 +205,8 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 			// it is doing batched rendering and this collides with how item overrides are implemented here
 			this.barrelItemOverrides.resolve(this, stack, null, null, 0);
 		}
-		context.bakedModelConsumer().accept(this, null);
+		context.fallbackConsumer().accept(this);
+		//context.bakedModelConsumer().accept(this, null);
 	}
 
 	@Override
@@ -381,7 +383,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, IDataModel {
 		BarrelDynamicModelBase.BarrelModelPartDefinition baseModelPartDefinition = bakingData.modelPartDefinition();
 		return baseModelPartDefinition.modelLocation().map(modelLocation -> {
 			BlockModel baseModel = new CompositeElementsModel(modelLocation, materials);
-			baseModel.resolveParents(baker::getModel); //need to call resolveParents here to get parent models loaded which happens in that call
+			baseModel.resolveParents(baker::getModel); //need to call resolveParents here to get parent models loaded
 			return baseModel.bake(baker, baseModel, spriteGetter, bakingData.modelState(), bakingData.modelLocation(), false);
 		}).orElse(Minecraft.getInstance().getModelManager().getMissingModel());
 	}

@@ -81,7 +81,7 @@ public class ShulkerBoxItem extends StorageBlockItem implements IStashStorageIte
 
 	@Override
 	public void onDestroyed(ItemEntity itemEntity) {
-		Level level = itemEntity.getLevel();
+		Level level = itemEntity.level();
 		if (level.isClientSide) {
 			return;
 		}
@@ -90,6 +90,23 @@ public class ShulkerBoxItem extends StorageBlockItem implements IStashStorageIte
 			InventoryHelper.dropItems(storageWrapper.getInventoryHandler(), level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ());
 			InventoryHelper.dropItems(storageWrapper.getUpgradeHandler(), level, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ());
 		});
+	}
+
+	public static StorageWrapper initWrapper(ItemStack stack) {
+		UUID uuid = NBTHelper.getUniqueId(stack, "uuid").orElse(null);
+		StorageWrapper storageWrapper = new StackStorageWrapper(stack) {
+			@Override
+			protected boolean isAllowedInStorage(ItemStack stack) {
+				Block block = Block.byItem(stack.getItem());
+				return !(block instanceof ShulkerBoxBlock) && !(block instanceof net.minecraft.world.level.block.ShulkerBoxBlock) && !Config.SERVER.shulkerBoxDisallowedItems.isItemDisallowed(stack.getItem());
+			}
+		};
+		if (uuid != null) {
+			CompoundTag compoundtag = ItemContentsStorage.get().getOrCreateStorageContents(uuid).getCompound(StorageBlockEntity.STORAGE_WRAPPER_TAG);
+			storageWrapper.load(compoundtag);
+			storageWrapper.setContentsUuid(uuid); //setting here because client side the uuid isn't in contentsnbt before this data is synced from server and it would create a new one otherwise
+		}
+		return storageWrapper;
 	}
 
 	@Override
@@ -174,22 +191,5 @@ public class ShulkerBoxItem extends StorageBlockItem implements IStashStorageIte
 		}
 
 		return super.overrideOtherStackedOnMe(storageStack, otherStack, slot, action, player, carriedAccess);
-	}
-
-	public static StorageWrapper initWrapper(ItemStack stack) {
-		UUID uuid = NBTHelper.getUniqueId(stack, "uuid").orElse(null);
-		StorageWrapper storageWrapper = new StackStorageWrapper(stack) {
-			@Override
-			protected boolean isAllowedInStorage(ItemStack stack) {
-				Block block = Block.byItem(stack.getItem());
-				return !(block instanceof ShulkerBoxBlock) && !(block instanceof net.minecraft.world.level.block.ShulkerBoxBlock) && !Config.SERVER.shulkerBoxDisallowedItems.isItemDisallowed(stack.getItem());
-			}
-		};
-		if (uuid != null) {
-			CompoundTag compoundtag = ItemContentsStorage.get().getOrCreateStorageContents(uuid).getCompound(StorageBlockEntity.STORAGE_WRAPPER_TAG);
-			storageWrapper.load(compoundtag);
-			storageWrapper.setContentsUuid(uuid); //setting here because client side the uuid isn't in contentsnbt before this data is synced from server and it would create a new one otherwise
-		}
-		return storageWrapper;
 	}
 }

@@ -1,5 +1,7 @@
 package net.p3pp3rf1y.sophisticatedstorage.block;
 
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -82,6 +84,16 @@ public abstract class WoodStorageBlockEntity extends StorageBlockEntity {
 	@Override
 	public boolean shouldDropContents() {
 		return !isPacked();
+	}
+
+	@Nullable
+	@Override
+	public <T, C> T getCapability(BlockApiLookup<T, C> cap, @Nullable C opt) {
+		if (isPacked() && cap == ItemStorage.SIDED) {
+			return null;
+		}
+
+		return super.getCapability(cap, opt);
 	}
 
 	@Override

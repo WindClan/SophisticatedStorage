@@ -2,11 +2,11 @@ package net.p3pp3rf1y.sophisticatedstorage.data;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.BlockItem;
@@ -18,12 +18,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.p3pp3rf1y.sophisticatedcore.api.Tags;
+import net.p3pp3rf1y.sophisticatedcore.compat.CompatModIds;
+import net.p3pp3rf1y.sophisticatedcore.compat.chipped.BlockTransformationUpgradeItem;
 import net.p3pp3rf1y.sophisticatedcore.crafting.ShapeBasedRecipeBuilder;
 import net.p3pp3rf1y.sophisticatedcore.crafting.ShapelessBasedRecipeBuilder;
 import net.p3pp3rf1y.sophisticatedcore.init.ModRecipes;
 import net.p3pp3rf1y.sophisticatedcore.util.RegistryHelper;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
+import net.p3pp3rf1y.sophisticatedstorage.compat.chipped.ChippedCompat;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModItems;
 import net.p3pp3rf1y.sophisticatedstorage.item.WoodStorageBlockItem;
@@ -77,7 +80,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 
 	@SuppressWarnings("removal")
 	private void addStorageTierUpgradeRecipes(Consumer<FinishedRecipe> consumer, BlockItem baseTierItem, BlockItem ironTierItem, BlockItem goldTierItem, BlockItem diamondTierItem, BlockItem netheriteTierItem) {
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ironTierItem, ModBlocks.STORAGE_TIER_UPGRADE_RECIPE_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ironTierItem, ModBlocks.STORAGE_TIER_UPGRADE_RECIPE_SERIALIZER)
 				.pattern("III")
 				.pattern("ISI")
 				.pattern("III")
@@ -86,7 +89,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_" + RegistryHelper.getItemKey(baseTierItem).getPath(), has(baseTierItem))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, goldTierItem, ModBlocks.STORAGE_TIER_UPGRADE_RECIPE_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(goldTierItem, ModBlocks.STORAGE_TIER_UPGRADE_RECIPE_SERIALIZER)
 				.pattern("GGG")
 				.pattern("GSG")
 				.pattern("GGG")
@@ -95,7 +98,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_iron_" + RegistryHelper.getItemKey(ironTierItem).getPath(), has(ironTierItem))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, diamondTierItem, ModBlocks.STORAGE_TIER_UPGRADE_RECIPE_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(diamondTierItem, ModBlocks.STORAGE_TIER_UPGRADE_RECIPE_SERIALIZER)
 				.pattern("DDD")
 				.pattern("DSD")
 				.pattern("DDD")
@@ -112,7 +115,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 	}
 
 	private void addControllerRelatedRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CONTROLLER_ITEM)
+		ShapeBasedRecipeBuilder.shaped(ModBlocks.CONTROLLER_ITEM)
 				.pattern("SCS")
 				.pattern("PBP")
 				.pattern("SCS")
@@ -129,7 +132,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_controller", has(ModBlocks.CONTROLLER_ITEM))
 				.save(consumer, SophisticatedStorage.getRL("storage_link_from_controller"));
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.STORAGE_LINK_ITEM)
+		ShapeBasedRecipeBuilder.shaped(ModBlocks.STORAGE_LINK_ITEM)
 				.pattern("EP")
 				.pattern("RS")
 				.define('E', Items.ENDER_PEARL)
@@ -139,7 +142,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_repeater", has(Items.REPEATER))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TOOL)
+		ShapeBasedRecipeBuilder.shaped(ModItems.STORAGE_TOOL)
 				.pattern(" EI")
 				.pattern(" SR")
 				.pattern("S  ")
@@ -152,7 +155,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 	}
 
 	private void addShulkerBoxRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SHULKER_BOX_ITEM)
+		ShapeBasedRecipeBuilder.shaped(ModBlocks.SHULKER_BOX_ITEM)
 				.pattern(" S")
 				.pattern("RC")
 				.pattern(" S")
@@ -183,7 +186,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 		tintedShulkerBoxRecipe(consumer, Blocks.WHITE_SHULKER_BOX, DyeColor.WHITE);
 		tintedShulkerBoxRecipe(consumer, Blocks.YELLOW_SHULKER_BOX, DyeColor.YELLOW);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModBlocks.SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
 				.pattern("S")
 				.pattern("C")
 				.pattern("S")
@@ -194,7 +197,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 
 		addStorageTierUpgradeRecipes(consumer, ModBlocks.SHULKER_BOX_ITEM, ModBlocks.IRON_SHULKER_BOX_ITEM, ModBlocks.GOLD_SHULKER_BOX_ITEM, ModBlocks.DIAMOND_SHULKER_BOX_ITEM, ModBlocks.NETHERITE_SHULKER_BOX_ITEM);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.IRON_SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModBlocks.IRON_SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
 				.pattern("S")
 				.pattern("C")
 				.pattern("S")
@@ -203,7 +206,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_iron_chest", has(ModBlocks.IRON_CHEST_ITEM))
 				.save(consumer, SophisticatedStorage.getRL("iron_shulker_from_iron_chest"));
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.GOLD_SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModBlocks.GOLD_SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
 				.pattern("S")
 				.pattern("C")
 				.pattern("S")
@@ -212,7 +215,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_gold_chest", has(ModBlocks.GOLD_CHEST_ITEM))
 				.save(consumer, SophisticatedStorage.getRL("gold_shulker_from_gold_chest"));
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.DIAMOND_SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModBlocks.DIAMOND_SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
 				.pattern("S")
 				.pattern("C")
 				.pattern("S")
@@ -221,7 +224,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_diamond_chest", has(ModBlocks.DIAMOND_CHEST_ITEM))
 				.save(consumer, SophisticatedStorage.getRL("diamond_shulker_from_diamond_chest"));
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.NETHERITE_SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModBlocks.NETHERITE_SHULKER_BOX_ITEM, ModBlocks.SHULKER_BOX_FROM_CHEST_RECIPE_SERIALIZER)
 				.pattern("S")
 				.pattern("C")
 				.pattern("S")
@@ -232,7 +235,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 	}
 
 	private void addTierUpgradeItemRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BASIC_TIER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.BASIC_TIER_UPGRADE)
 				.pattern(" S ")
 				.pattern("SRS")
 				.pattern(" S ")
@@ -241,7 +244,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_REDSTONE_TORCH_CRITERION_NAME, has(Items.REDSTONE_TORCH))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BASIC_TO_IRON_TIER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.BASIC_TO_IRON_TIER_UPGRADE)
 				.pattern("III")
 				.pattern("IRI")
 				.pattern("III")
@@ -250,7 +253,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_REDSTONE_TORCH_CRITERION_NAME, has(Items.REDSTONE_TORCH))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BASIC_TO_GOLD_TIER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.BASIC_TO_GOLD_TIER_UPGRADE)
 				.pattern("GGG")
 				.pattern("GTG")
 				.pattern("GGG")
@@ -259,7 +262,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_basic_to_iron_tier_upgrade", has(ModItems.BASIC_TO_IRON_TIER_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BASIC_TO_DIAMOND_TIER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.BASIC_TO_DIAMOND_TIER_UPGRADE)
 				.pattern("DDD")
 				.pattern("DTD")
 				.pattern("DDD")
@@ -274,7 +277,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_basic_to_diamond_tier_upgrade", has(ModItems.BASIC_TO_DIAMOND_TIER_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.IRON_TO_GOLD_TIER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.IRON_TO_GOLD_TIER_UPGRADE)
 				.pattern("GGG")
 				.pattern("GRG")
 				.pattern("GGG")
@@ -283,7 +286,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_REDSTONE_TORCH_CRITERION_NAME, has(Items.REDSTONE_TORCH))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.IRON_TO_DIAMOND_TIER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.IRON_TO_DIAMOND_TIER_UPGRADE)
 				.pattern("DDD")
 				.pattern("DTD")
 				.pattern("DDD")
@@ -298,7 +301,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_iron_to_diamond_tier_upgrade", has(ModItems.IRON_TO_DIAMOND_TIER_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.GOLD_TO_DIAMOND_TIER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.GOLD_TO_DIAMOND_TIER_UPGRADE)
 				.pattern("DDD")
 				.pattern("DRD")
 				.pattern("DDD")
@@ -321,7 +324,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 	}
 
 	private void addUpgradeRecipes(Consumer<FinishedRecipe> consumer) {
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.UPGRADE_BASE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.UPGRADE_BASE)
 				.pattern("PIP")
 				.pattern("IPI")
 				.pattern("PIP")
@@ -330,7 +333,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_iron_ingot", has(ConventionalItemTags.IRON_INGOTS))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PICKUP_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.PICKUP_UPGRADE)
 				.pattern(" P ")
 				.pattern("LBL")
 				.pattern("RRR")
@@ -341,7 +344,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ADVANCED_PICKUP_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.ADVANCED_PICKUP_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern(" D ")
 				.pattern("GPG")
 				.pattern("RRR")
@@ -352,7 +355,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_pickup_upgrade", has(ModItems.PICKUP_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FILTER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.FILTER_UPGRADE)
 				.pattern("RSR")
 				.pattern("SBS")
 				.pattern("RSR")
@@ -362,7 +365,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ADVANCED_FILTER_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.ADVANCED_FILTER_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern("GPG")
 				.pattern("RRR")
 				.define('G', ConventionalItemTags.GOLD_INGOTS)
@@ -371,7 +374,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_filter_upgrade", has(ModItems.FILTER_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.MAGNET_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.MAGNET_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern("EIE")
 				.pattern("IPI")
 				.pattern("R L")
@@ -383,7 +386,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_pickup_upgrade", has(ModItems.PICKUP_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ADVANCED_MAGNET_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.ADVANCED_MAGNET_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern("EIE")
 				.pattern("IPI")
 				.pattern("R L")
@@ -395,7 +398,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_advanced_pickup_upgrade", has(ModItems.ADVANCED_PICKUP_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ADVANCED_MAGNET_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.ADVANCED_MAGNET_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern(" D ")
 				.pattern("GMG")
 				.pattern("RRR")
@@ -406,7 +409,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_magnet_upgrade", has(ModItems.MAGNET_UPGRADE))
 				.save(consumer, SophisticatedStorage.getRL("advanced_magnet_upgrade_from_basic"));
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FEEDING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.FEEDING_UPGRADE)
 				.pattern(" C ")
 				.pattern("ABM")
 				.pattern(" E ")
@@ -418,7 +421,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COMPACTING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.COMPACTING_UPGRADE)
 				.pattern("IPI")
 				.pattern("PBP")
 				.pattern("RPR")
@@ -429,7 +432,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ADVANCED_COMPACTING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.ADVANCED_COMPACTING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern(" D ")
 				.pattern("GCG")
 				.pattern("RRR")
@@ -440,7 +443,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_compacting_upgrade", has(ModItems.COMPACTING_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.VOID_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.VOID_UPGRADE)
 				.pattern(" E ")
 				.pattern("OBO")
 				.pattern("ROR")
@@ -451,7 +454,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ADVANCED_VOID_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.ADVANCED_VOID_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern(" D ")
 				.pattern("GVG")
 				.pattern("RRR")
@@ -462,7 +465,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_void_upgrade", has(ModItems.VOID_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SMELTING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.SMELTING_UPGRADE)
 				.pattern("RIR")
 				.pattern("IBI")
 				.pattern("RFR")
@@ -473,7 +476,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.AUTO_SMELTING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.AUTO_SMELTING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern("DHD")
 				.pattern("RSH")
 				.pattern("GHG")
@@ -485,7 +488,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_SMELTING_UPGRADE, has(ModItems.SMELTING_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CRAFTING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.CRAFTING_UPGRADE)
 				.pattern(" T ")
 				.pattern("IBI")
 				.pattern(" C ")
@@ -496,7 +499,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STONECUTTER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.STONECUTTER_UPGRADE)
 				.pattern(" S ")
 				.pattern("IBI")
 				.pattern(" R ")
@@ -507,7 +510,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STACK_UPGRADE_TIER_1)
+		ShapeBasedRecipeBuilder.shaped(ModItems.STACK_UPGRADE_TIER_1)
 				.pattern("LLL")
 				.pattern("LBL")
 				.pattern("LLL")
@@ -516,7 +519,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STACK_UPGRADE_TIER_2)
+		ShapeBasedRecipeBuilder.shaped(ModItems.STACK_UPGRADE_TIER_2)
 				.pattern("III")
 				.pattern("ISI")
 				.pattern("BIB")
@@ -526,7 +529,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.STACK_UPGRADE_TIER_1))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STACK_UPGRADE_TIER_3)
+		ShapeBasedRecipeBuilder.shaped(ModItems.STACK_UPGRADE_TIER_3)
 				.pattern("GGG")
 				.pattern("GSG")
 				.pattern("BGB")
@@ -536,7 +539,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.STACK_UPGRADE_TIER_2))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STACK_UPGRADE_TIER_4)
+		ShapeBasedRecipeBuilder.shaped(ModItems.STACK_UPGRADE_TIER_4)
 				.pattern("DDD")
 				.pattern("DSD")
 				.pattern("BDB")
@@ -546,7 +549,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.STACK_UPGRADE_TIER_3))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.JUKEBOX_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.JUKEBOX_UPGRADE)
 				.pattern(" J ")
 				.pattern("IBI")
 				.pattern(" R ")
@@ -557,7 +560,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ADVANCED_FEEDING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.ADVANCED_FEEDING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern(" D ")
 				.pattern("GVG")
 				.pattern("RRR")
@@ -568,7 +571,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_feeding_upgrade", has(ModItems.FEEDING_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SMOKING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.SMOKING_UPGRADE)
 				.pattern("RIR")
 				.pattern("IBI")
 				.pattern("RSR")
@@ -579,7 +582,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SMOKING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.SMOKING_UPGRADE)
 				.pattern(" L ")
 				.pattern("LSL")
 				.pattern(" L ")
@@ -588,7 +591,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_SMELTING_UPGRADE, has(ModItems.SMELTING_UPGRADE))
 				.save(consumer, SophisticatedStorage.getRL("smoking_upgrade_from_smelting_upgrade"));
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.AUTO_SMOKING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.AUTO_SMOKING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern("DHD")
 				.pattern("RSH")
 				.pattern("GHG")
@@ -600,7 +603,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_smoking_upgrade", has(ModItems.SMOKING_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.AUTO_SMOKING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.AUTO_SMOKING_UPGRADE)
 				.pattern(" L ")
 				.pattern("LSL")
 				.pattern(" L ")
@@ -609,7 +612,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_auto_smelting_upgrade", has(ModItems.AUTO_SMELTING_UPGRADE))
 				.save(consumer, SophisticatedStorage.getRL("auto_smoking_upgrade_from_auto_smelting_upgrade"));
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLASTING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.BLASTING_UPGRADE)
 				.pattern("RIR")
 				.pattern("IBI")
 				.pattern("RFR")
@@ -620,7 +623,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLASTING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.BLASTING_UPGRADE)
 				.pattern("III")
 				.pattern("ISI")
 				.pattern("TTT")
@@ -630,7 +633,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_SMELTING_UPGRADE, has(ModItems.SMELTING_UPGRADE))
 				.save(consumer, SophisticatedStorage.getRL("blasting_upgrade_from_smelting_upgrade"));
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.AUTO_BLASTING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.AUTO_BLASTING_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern("DHD")
 				.pattern("RSH")
 				.pattern("GHG")
@@ -642,7 +645,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_blasting_upgrade", has(ModItems.BLASTING_UPGRADE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.AUTO_BLASTING_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.AUTO_BLASTING_UPGRADE)
 				.pattern("III")
 				.pattern("ISI")
 				.pattern("TTT")
@@ -652,7 +655,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_auto_smelting_upgrade", has(ModItems.AUTO_SMELTING_UPGRADE))
 				.save(consumer, SophisticatedStorage.getRL("auto_blasting_upgrade_from_auto_smelting_upgrade"));
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COMPRESSION_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.COMPRESSION_UPGRADE)
 				.pattern(" I ")
 				.pattern("PBP")
 				.pattern("RIR")
@@ -663,7 +666,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.HOPPER_UPGRADE)
+		ShapeBasedRecipeBuilder.shaped(ModItems.HOPPER_UPGRADE)
 				.pattern(" H ")
 				.pattern("IBI")
 				.pattern("RRR")
@@ -674,7 +677,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
 				.save(consumer);
 
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ADVANCED_HOPPER_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
+		ShapeBasedRecipeBuilder.shaped(ModItems.ADVANCED_HOPPER_UPGRADE, ModRecipes.UPGRADE_NEXT_TIER_SERIALIZER)
 				.pattern(" D ")
 				.pattern("GHG")
 				.pattern("ROR")
@@ -686,17 +689,17 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.unlockedBy("has_feeding_upgrade", has(ModItems.HOPPER_UPGRADE))
 				.save(consumer);
 
-		// addChippedUpgradeRecipes(consumer);
+		addChippedUpgradeRecipes(consumer);
 	}
 
-	/*private static void addChippedUpgradeRecipes(Consumer<FinishedRecipe> consumer) {
-		addChippedUpgradeRecipe(consumer, ChippedCompat.BOTANIST_WORKBENCH_UPGRADE.get(), earth.terrarium.chipped.common.registry.ModBlocks.BOTANIST_WORKBENCH.get());
-		addChippedUpgradeRecipe(consumer, ChippedCompat.GLASSBLOWER_UPGRADE.get(), earth.terrarium.chipped.common.registry.ModBlocks.GLASSBLOWER.get());
-		addChippedUpgradeRecipe(consumer, ChippedCompat.CARPENTERS_TABLE_UPGRADE.get(), earth.terrarium.chipped.common.registry.ModBlocks.CARPENTERS_TABLE.get());
-		addChippedUpgradeRecipe(consumer, ChippedCompat.LOOM_TABLE_UPGRADE.get(), earth.terrarium.chipped.common.registry.ModBlocks.LOOM_TABLE.get());
-		addChippedUpgradeRecipe(consumer, ChippedCompat.MASON_TABLE_UPGRADE.get(), earth.terrarium.chipped.common.registry.ModBlocks.MASON_TABLE.get());
-		addChippedUpgradeRecipe(consumer, ChippedCompat.ALCHEMY_BENCH_UPGRADE.get(), earth.terrarium.chipped.common.registry.ModBlocks.ALCHEMY_BENCH.get());
-		addChippedUpgradeRecipe(consumer, ChippedCompat.TINKERING_TABLE_UPGRADE.get(), earth.terrarium.chipped.common.registry.ModBlocks.TINKERING_TABLE.get());
+	private static void addChippedUpgradeRecipes(Consumer<FinishedRecipe> consumer) {
+		addChippedUpgradeRecipe(consumer, ChippedCompat.BOTANIST_WORKBENCH_UPGRADE, earth.terrarium.chipped.common.registry.ModBlocks.BOTANIST_WORKBENCH.get());
+		addChippedUpgradeRecipe(consumer, ChippedCompat.GLASSBLOWER_UPGRADE, earth.terrarium.chipped.common.registry.ModBlocks.GLASSBLOWER.get());
+		addChippedUpgradeRecipe(consumer, ChippedCompat.CARPENTERS_TABLE_UPGRADE, earth.terrarium.chipped.common.registry.ModBlocks.CARPENTERS_TABLE.get());
+		addChippedUpgradeRecipe(consumer, ChippedCompat.LOOM_TABLE_UPGRADE, earth.terrarium.chipped.common.registry.ModBlocks.LOOM_TABLE.get());
+		addChippedUpgradeRecipe(consumer, ChippedCompat.MASON_TABLE_UPGRADE, earth.terrarium.chipped.common.registry.ModBlocks.MASON_TABLE.get());
+		addChippedUpgradeRecipe(consumer, ChippedCompat.ALCHEMY_BENCH_UPGRADE, earth.terrarium.chipped.common.registry.ModBlocks.ALCHEMY_BENCH.get());
+		addChippedUpgradeRecipe(consumer, ChippedCompat.TINKERING_TABLE_UPGRADE, earth.terrarium.chipped.common.registry.ModBlocks.TINKERING_TABLE.get());
 	}
 
 	private static void addChippedUpgradeRecipe(Consumer<FinishedRecipe> consumer, BlockTransformationUpgradeItem upgrade, Block workbench) {
@@ -704,14 +707,14 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 				.pattern(" W ")
 				.pattern("IBI")
 				.pattern(" R ")
-				.define('B', ModItems.UPGRADE_BASE.get())
+				.define('B', ModItems.UPGRADE_BASE)
 				.define('R', ConventionalItemTags.REDSTONE_DUSTS)
 				.define('I', ConventionalItemTags.IRON_INGOTS)
 				.define('W', workbench)
-				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE.get()))
-				.condition(new ModLoadedCondition(CompatModIds.CHIPPED))
+				.unlockedBy(HAS_UPGRADE_BASE_CRITERION_NAME, has(ModItems.UPGRADE_BASE))
+				.condition(DefaultResourceConditions.allModsLoaded(CompatModIds.CHIPPED))
 				.save(consumer);
-	}*/
+	}
 
 	private void addChestRecipes(Consumer<FinishedRecipe> consumer) {
 		WoodStorageBlockBase.CUSTOM_TEXTURE_WOOD_TYPES.forEach((woodType, blockFamily) -> woodChestRecipe(consumer, woodType, blockFamily.getBaseBlock()));
@@ -742,7 +745,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 	private void addQuarkChestRecipe(Consumer<FinishedRecipe> consumer, String name, WoodType woodType) {
 		String chestRegistryName = "quark:" + name;
 		Block chestBlock = getBlock(chestRegistryName);
-		ShapelessBasedRecipeBuilder.shapeless(RecipeCategory.MISC, WoodStorageBlockItem.setWoodType(new ItemStack(ModBlocks.CHEST_ITEM), woodType))
+		ShapelessBasedRecipeBuilder.shapeless(WoodStorageBlockItem.setWoodType(new ItemStack(ModBlocks.CHEST_ITEM), woodType))
 				.requires(chestBlock)
 				.requires(Blocks.REDSTONE_TORCH)
 				.condition(new ItemExistsCondition(chestRegistryName))
@@ -767,7 +770,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 	}
 
 	private void woodBarrelRecipe(Consumer<FinishedRecipe> consumer, WoodType woodType, Block planks, Block slab) {
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, WoodStorageBlockItem.setWoodType(new ItemStack(ModBlocks.BARREL_ITEM), woodType))
+		ShapeBasedRecipeBuilder.shaped(WoodStorageBlockItem.setWoodType(new ItemStack(ModBlocks.BARREL_ITEM), woodType))
 				.pattern("PSP")
 				.pattern("PRP")
 				.pattern("PSP")
@@ -779,7 +782,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 	}
 
 	private void limitedWoodBarrelRecipe(Consumer<FinishedRecipe> consumer, WoodType woodType, Block planks, Block slab, Consumer<ShapeBasedRecipeBuilder> addPattern, BlockItem item) {
-		ShapeBasedRecipeBuilder builder = ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, WoodStorageBlockItem.setWoodType(new ItemStack(item), woodType))
+		ShapeBasedRecipeBuilder builder = ShapeBasedRecipeBuilder.shaped(WoodStorageBlockItem.setWoodType(new ItemStack(item), woodType))
 				.define('P', planks)
 				.define('S', slab)
 				.define('R', Blocks.REDSTONE_TORCH)
@@ -821,7 +824,7 @@ public class StorageRecipeProvider extends FabricRecipeProvider {
 	}
 
 	private void woodChestRecipe(Consumer<FinishedRecipe> consumer, WoodType woodType, Block planks) {
-		ShapeBasedRecipeBuilder.shaped(RecipeCategory.MISC, WoodStorageBlockItem.setWoodType(new ItemStack(ModBlocks.CHEST_ITEM), woodType))
+		ShapeBasedRecipeBuilder.shaped(WoodStorageBlockItem.setWoodType(new ItemStack(ModBlocks.CHEST_ITEM), woodType))
 				.pattern("PPP")
 				.pattern("PRP")
 				.pattern("PPP")

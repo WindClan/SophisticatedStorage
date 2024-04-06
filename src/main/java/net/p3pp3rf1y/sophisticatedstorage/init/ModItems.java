@@ -186,7 +186,7 @@ public class ModItems {
 			new LootItemFunctionType(new CopyStorageDataFunction.Serializer()));
 
 	@SuppressWarnings("unused")
-	public static final CreativeModeTab CREATIVE_TAB = FabricItemGroup.builder(SophisticatedStorage.getRL("item_group"))
+	public static final CreativeModeTab CREATIVE_TAB = FabricItemGroup.builder()
 			.icon(() -> WoodStorageBlockItem.setWoodType(new ItemStack(ModBlocks.GOLD_BARREL_ITEM), WoodType.SPRUCE))
 			.title(Component.translatable("itemGroup.sophisticatedstorage"))
 			.displayItems((featureFlags, output) -> {
@@ -206,6 +206,8 @@ public class ModItems {
 	}
 
 	public static void register() {
+		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, SophisticatedStorage.getRL("item_group"), CREATIVE_TAB);
+
 		registerContainers();
 	}
 

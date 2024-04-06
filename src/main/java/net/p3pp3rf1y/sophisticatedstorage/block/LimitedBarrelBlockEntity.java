@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.p3pp3rf1y.sophisticatedcore.inventory.InventoryHandler;
 import net.p3pp3rf1y.sophisticatedcore.settings.memory.MemorySettingsCategory;
 import net.p3pp3rf1y.sophisticatedcore.upgrades.voiding.VoidUpgradeWrapper;
-import net.p3pp3rf1y.sophisticatedcore.util.ItemStackHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.NBTHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.RandHelper;
 import net.p3pp3rf1y.sophisticatedcore.util.WorldHelper;
@@ -177,7 +176,7 @@ public class LimitedBarrelBlockEntity extends BarrelBlockEntity implements ICoun
 		PlayerInventoryStorage playerInventory = PlayerInventoryStorage.of(player);
 		for (var view : playerInventory.nonEmptyViews()) {
 			ItemVariant resource = view.getResource();
-			if ((stackInSlot.isEmpty() && (memoryItemMatches.test(resource.toStack()) || invHandler.isFilterItem(resource.getItem())) || (!resource.isBlank() && ItemStackHelper.canItemStacksStack(stackInSlot, resource.toStack((int) view.getAmount()))))) {
+			if ((stackInSlot.isEmpty() && (memoryItemMatches.test(resource.toStack()) || invHandler.isFilterItem(resource.getItem())) || (!resource.isBlank() && ItemStack.isSameItemSameTags(stackInSlot, resource.toStack((int) view.getAmount()))))) {
 				try (Transaction ctx = Transaction.openOuter()) {
 					long simulatedInsert;
 					try (Transaction simulate = Transaction.openNested(ctx)) {

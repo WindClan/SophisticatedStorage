@@ -8,7 +8,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.p3pp3rf1y.sophisticatedcore.client.gui.StorageScreenBase;
@@ -24,32 +24,32 @@ import net.p3pp3rf1y.sophisticatedcore.compat.chipped.BlockTransformationUpgrade
 import net.p3pp3rf1y.sophisticatedcore.compat.chipped.BlockTransformationUpgradeWrapper;
 import net.p3pp3rf1y.sophisticatedstorage.client.gui.StorageButtonDefinitions;
 import net.p3pp3rf1y.sophisticatedstorage.compat.emi.EmiCompat;
-import net.p3pp3rf1y.sophisticatedstorage.compat.jei.JEIPlugin;
+import net.p3pp3rf1y.sophisticatedstorage.compat.jei.StoragePlugin;
 import net.p3pp3rf1y.sophisticatedstorage.compat.rei.REIClientCompat;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModItems;
 
 public class ChippedCompat implements ICompat {
 	public static final BlockTransformationUpgradeItem BOTANIST_WORKBENCH_UPGRADE = ModItems.register("chipped/botanist_workbench_upgrade",
-			() -> new BlockTransformationUpgradeItem(ModItems.CREATIVE_TAB, ModRecipeTypes.BOTANIST_WORKBENCH_TYPE));
+			() -> new BlockTransformationUpgradeItem(ModRecipeTypes.BOTANIST_WORKBENCH));
 	public static final BlockTransformationUpgradeItem GLASSBLOWER_UPGRADE = ModItems.register("chipped/glassblower_upgrade",
-			() -> new BlockTransformationUpgradeItem(ModItems.CREATIVE_TAB, ModRecipeTypes.GLASSBLOWER_TYPE));
+			() -> new BlockTransformationUpgradeItem(ModRecipeTypes.GLASSBLOWER));
 	public static final BlockTransformationUpgradeItem CARPENTERS_TABLE_UPGRADE = ModItems.register("chipped/carpenters_table_upgrade",
-			() -> new BlockTransformationUpgradeItem(ModItems.CREATIVE_TAB, ModRecipeTypes.CARPENTERS_TABLE_TYPE));
+			() -> new BlockTransformationUpgradeItem(ModRecipeTypes.CARPENTERS_TABLE));
 	public static final BlockTransformationUpgradeItem LOOM_TABLE_UPGRADE = ModItems.register("chipped/loom_table_upgrade",
-			() -> new BlockTransformationUpgradeItem(ModItems.CREATIVE_TAB, ModRecipeTypes.LOOM_TABLE_TYPE));
+			() -> new BlockTransformationUpgradeItem(ModRecipeTypes.LOOM_TABLE));
 	public static final BlockTransformationUpgradeItem MASON_TABLE_UPGRADE = ModItems.register("chipped/mason_table_upgrade",
-			() -> new BlockTransformationUpgradeItem(ModItems.CREATIVE_TAB, ModRecipeTypes.MASON_TABLE_TYPE));
+			() -> new BlockTransformationUpgradeItem(ModRecipeTypes.MASON_TABLE));
 	public static final BlockTransformationUpgradeItem ALCHEMY_BENCH_UPGRADE = ModItems.register("chipped/alchemy_bench_upgrade",
-			() -> new BlockTransformationUpgradeItem(ModItems.CREATIVE_TAB, ModRecipeTypes.ALCHEMY_BENCH_TYPE));
+			() -> new BlockTransformationUpgradeItem(ModRecipeTypes.ALCHEMY_BENCH));
 	public static final BlockTransformationUpgradeItem TINKERING_TABLE_UPGRADE = ModItems.register("chipped/tinkering_table_upgrade",
-			() -> new BlockTransformationUpgradeItem(ModItems.CREATIVE_TAB, ModRecipeTypes.TINKERING_TABLE_TYPE));
+			() -> new BlockTransformationUpgradeItem(ModRecipeTypes.TINKERING_TABLE));
 
 	@Override
 	public void init() {
 		this.registerContainers();
 
 		if (FabricLoader.getInstance().isModLoaded(CompatModIds.JEI)) {
-			JEIPlugin.setAdditionalCatalystRegistrar(registration -> {
+			StoragePlugin.setAdditionalCatalystRegistrar(registration -> {
 				registration.addRecipeCatalyst(new ItemStack(BOTANIST_WORKBENCH_UPGRADE), ChippedRecipeCategory.BOTANIST_WORKBENCH_RECIPE);
 				registration.addRecipeCatalyst(new ItemStack(GLASSBLOWER_UPGRADE), ChippedRecipeCategory.GLASSBLOWER_RECIPE);
 				registration.addRecipeCatalyst(new ItemStack(CARPENTERS_TABLE_UPGRADE), ChippedRecipeCategory.CARPENTERS_TABLE_RECIPE);
@@ -97,7 +97,7 @@ public class ChippedCompat implements ICompat {
 
 	private void registerUpgradeContainer(BlockTransformationUpgradeItem item) {
 		UpgradeContainerType<BlockTransformationUpgradeWrapper, BlockTransformationUpgradeContainer> containerType = new UpgradeContainerType<>(BlockTransformationUpgradeContainer::new);
-		ResourceLocation itemId = Registry.ITEM.getKey(item);
+		ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
 		UpgradeContainerRegistry.register(itemId, containerType);
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 			UpgradeGuiManager.registerTab(containerType, (BlockTransformationUpgradeContainer upgradeContainer, Position position, StorageScreenBase<?> screen) -> {
