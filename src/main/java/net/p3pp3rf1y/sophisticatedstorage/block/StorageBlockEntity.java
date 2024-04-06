@@ -638,8 +638,8 @@ public abstract class StorageBlockEntity extends BlockEntity
 		}
 
 		@Override
-		public boolean isItemValid(int slot, ItemVariant resource) {
-			return matchesContents(resource.toStack()) && itemHandlerGetter.get().isItemValid(slot, resource);
+		public boolean isItemValid(int slot, ItemVariant resource, int count) {
+			return matchesContents(resource.toStack()) && itemHandlerGetter.get().isItemValid(slot, resource, count);
 		}
 
 		private boolean matchesContents(ItemStack stack) {
