@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.p3pp3rf1y.sophisticatedcore.client.render.CustomParticleIcon;
 import net.p3pp3rf1y.sophisticatedcore.inventory.ItemStackKey;
 import net.p3pp3rf1y.sophisticatedcore.renderdata.RenderInfo;
 import net.p3pp3rf1y.sophisticatedstorage.block.BarrelBlock;
@@ -74,7 +75,7 @@ import static net.p3pp3rf1y.sophisticatedstorage.client.render.DisplayItemRender
 import static net.p3pp3rf1y.sophisticatedstorage.client.render.DisplayItemRenderer.SMALL_3D_ITEM_SCALE;
 import static net.p3pp3rf1y.sophisticatedstorage.client.render.DisplayItemRenderer.getNorthBasedRotation;
 
-public abstract class BarrelBakedModelBase implements BakedModel, FabricBakedModel, IDataModel {
+public abstract class BarrelBakedModelBase implements BakedModel, FabricBakedModel, CustomParticleIcon {
 	private static final RenderContext.QuadTransform MOVE_TO_CORNER = QuadTransformers.applying(new Transformation(new Vector3f(-.5f, -.5f, -.5f), null, null, null));
 	public static final Map<Direction, RenderContext.QuadTransform> DIRECTION_ROTATES = Map.of(
 			Direction.UP, getDirectionRotationTransform(Direction.UP),
@@ -193,7 +194,8 @@ public abstract class BarrelBakedModelBase implements BakedModel, FabricBakedMod
 	@Override
 	public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
 		modelData = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
-		context.bakedModelConsumer().accept(this, state);
+		context.fallbackConsumer().accept(this);
+		//context.bakedModelConsumer().accept(this, state);
 	}
 
 	@Override
@@ -685,7 +687,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, FabricBakedMod
 		if (attachment instanceof BarrelBlockEntity.ModelData data) {
 			if (data.hasMainColor() && data.hasMainColor()) {
 				BakedModel model = getWoodModelParts(null, false).get(BarrelModelPart.TINTABLE_MAIN);
-				if (model instanceof IDataModel dataModel) {
+				if (model instanceof CustomParticleIcon dataModel) {
 					return dataModel.getParticleIcon(state, blockView, pos);
 				}
 				return model.getParticleIcon();
@@ -693,7 +695,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, FabricBakedMod
 
 			if (data.getMaterials() != null) {
 				Map<BarrelMaterial, ResourceLocation> materials = data.getMaterials();
-				if (materials != null) {
+				if (materials != null && !materials.isEmpty()) {
 					for (BarrelMaterial barrelMaterial : PARTICLE_ICON_MATERIAL_PRIORITY) {
 						if (materials.containsKey(barrelMaterial)) {
 							BlockState blockState = getDefaultBlockState(materials.get(barrelMaterial));
@@ -708,8 +710,8 @@ public abstract class BarrelBakedModelBase implements BakedModel, FabricBakedMod
 				if (!woodModelParts.containsKey(name)) {
 					return getParticleIcon();
 				}
-				BakedModel model = getWoodModelParts(null, false).get(BarrelModelPart.BASE);
-				if (model instanceof IDataModel dataModel) {
+				BakedModel model = getWoodModelParts(name, false).get(BarrelModelPart.BASE);
+				if (model instanceof CustomParticleIcon dataModel) {
 					return dataModel.getParticleIcon(state, blockView, pos);
 				}
 				return model.getParticleIcon();
