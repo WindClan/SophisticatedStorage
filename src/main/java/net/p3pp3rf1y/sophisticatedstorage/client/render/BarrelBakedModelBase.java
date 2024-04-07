@@ -193,8 +193,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, CustomParticle
 	@Override
 	public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
 		modelData = blockView.getBlockEntityRenderData(pos);
-		context.fallbackConsumer().accept(this);
-		//context.bakedModelConsumer().accept(this, state);
+		BakedModel.super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
 	}
 
 	@Override
@@ -205,8 +204,7 @@ public abstract class BarrelBakedModelBase implements BakedModel, CustomParticle
 			// it is doing batched rendering and this collides with how item overrides are implemented here
 			this.barrelItemOverrides.resolve(this, stack, null, null, 0);
 		}
-		context.fallbackConsumer().accept(this);
-		//context.bakedModelConsumer().accept(this, null);
+		BakedModel.super.emitItemQuads(stack, randomSupplier, context);
 	}
 
 	@Override
