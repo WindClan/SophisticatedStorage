@@ -54,6 +54,7 @@ import net.p3pp3rf1y.sophisticatedstorage.init.ModItems;
 import net.p3pp3rf1y.sophisticatedstorage.item.BarrelBlockItem;
 import net.p3pp3rf1y.sophisticatedstorage.item.StorageBlockItem;
 import net.p3pp3rf1y.sophisticatedstorage.item.WoodStorageBlockItem;
+import net.p3pp3rf1y.sophisticatedstorage.mixin.client.accessor.BakedQuadAccessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -569,14 +570,14 @@ public abstract class BarrelBakedModelBase implements BakedModel, CustomParticle
 	private void updateTintIndexes(List<BakedQuad> quads, int displayItemIndex) {
 		int offset = (displayItemIndex + 1) * 10;
 		quads.forEach(quad -> {
-			if (quad.tintIndex >= 0) {
-				quad.tintIndex = quad.tintIndex + offset;
+			if (((BakedQuadAccessor) quad).getTintIndex() >= 0) {
+				((BakedQuadAccessor) quad).setTintIndex(((BakedQuadAccessor) quad).getTintIndex() + offset);
 			}
 		});
 	}
 
 	private void recalculateDirections(List<BakedQuad> quads) {
-		quads.forEach(quad -> quad.direction = FaceBakery.calculateFacing(quad.getVertices()));
+		quads.forEach(quad -> ((BakedQuadAccessor) quad).setDirection(FaceBakery.calculateFacing(quad.getVertices())));
 	}
 
 	private RenderContext.QuadTransform getDirectionMove(ItemStack displayItem, BakedModel model, BlockState state, Direction direction, int displayItemIndex, int displayItemCount, float itemScale) {

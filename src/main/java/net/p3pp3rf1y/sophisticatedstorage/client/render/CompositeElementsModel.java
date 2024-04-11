@@ -16,11 +16,12 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
+import net.p3pp3rf1y.sophisticatedstorage.mixin.client.accessor.BlockModelAccessor;
+import net.p3pp3rf1y.sophisticatedstorage.mixin.client.accessor.SimpleBakedModelBuilderAccessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +52,7 @@ public class CompositeElementsModel extends BlockModel {
 		for (BlockElement element : getElements()) {
 			element.faces.forEach((side, face) -> {
 				var sprite = spriteGetter.apply(this.getMaterial(face.texture));
-				var simpleModelBuilder = new SimpleBakedModel.Builder(this.hasAmbientOcclusion(), this.getGuiLight().lightLikeBlock(), false, transforms, overrides).particle(sprite);
+				var simpleModelBuilder = SimpleBakedModelBuilderAccessor.create(this.hasAmbientOcclusion(), this.getGuiLight().lightLikeBlock(), false, transforms, overrides).particle(sprite);
 				simpleModelBuilder.addUnculledFace(BlockModel.FACE_BAKERY.bakeQuad(element.from, element.to, face, sprite, side, modelState, element.rotation, element.shade, modelLocation));
 				modelBuilder.addLayer(simpleModelBuilder.build());
 			});
@@ -86,9 +87,9 @@ public class CompositeElementsModel extends BlockModel {
 	@SuppressWarnings("java:S5803") //need to call textureMap here even though only visible for testing
 	private void copyTexturesFromAllIncludedModels() {
 		if (parent != null) {
-			parent.textureMap.forEach(textureMap::putIfAbsent);
+			((BlockModelAccessor) parent).getTextureMap().forEach(((BlockModelAccessor) this).getTextureMap()::putIfAbsent);
 			if (parent.getCustomGeometry() instanceof SimpleCompositeModel simpleCompositeModel) {
-				simpleCompositeModel.getTextures().forEach(textureMap::putIfAbsent);
+				simpleCompositeModel.getTextures().forEach(((BlockModelAccessor) this).getTextureMap()::putIfAbsent);
 			}
 		}
 	}
@@ -120,7 +121,7 @@ public class CompositeElementsModel extends BlockModel {
 
 	private Either<Material, String> findTexture(String textureName) {
 		for (BlockModel blockmodel = this; blockmodel != null; blockmodel = blockmodel.parent) {
-			Either<Material, String> either = blockmodel.textureMap.get(textureName);
+			Either<Material, String> either = ((BlockModelAccessor) blockmodel).getTextureMap().get(textureName);
 			if (either != null) {
 				return either;
 			}

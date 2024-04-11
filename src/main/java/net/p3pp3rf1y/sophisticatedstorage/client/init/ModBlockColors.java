@@ -11,6 +11,7 @@ import net.p3pp3rf1y.sophisticatedcore.util.WorldHelper;
 import net.p3pp3rf1y.sophisticatedstorage.block.LimitedBarrelBlock;
 import net.p3pp3rf1y.sophisticatedstorage.block.StorageBlockEntity;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
+import net.p3pp3rf1y.sophisticatedstorage.mixin.client.accessor.MinecraftAccessor;
 
 import java.util.List;
 import javax.annotation.Nullable;
@@ -53,7 +54,7 @@ public class ModBlockColors {
 							if (stack.isEmpty()) {
 								return -1;
 							}
-							return Minecraft.getInstance().itemColors.getColor(stack, tintIndex - tintOffset);
+							return ((MinecraftAccessor) Minecraft.getInstance()).getItemColors().getColor(stack, tintIndex - tintOffset);
 						}
 					}
 					return -1;

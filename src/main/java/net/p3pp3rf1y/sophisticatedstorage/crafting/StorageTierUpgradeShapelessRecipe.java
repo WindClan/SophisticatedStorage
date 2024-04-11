@@ -15,6 +15,7 @@ import net.p3pp3rf1y.sophisticatedstorage.common.CapabilityStorageWrapper;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
 import net.p3pp3rf1y.sophisticatedstorage.item.ShulkerBoxItem;
 import net.p3pp3rf1y.sophisticatedstorage.item.WoodStorageBlockItem;
+import net.p3pp3rf1y.sophisticatedstorage.mixin.common.accessor.ShapelessRecipeAccessor;
 
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class StorageTierUpgradeShapelessRecipe extends ShapelessRecipe implement
 	private final ShapelessRecipe compose;
 
 	public StorageTierUpgradeShapelessRecipe(ShapelessRecipe compose) {
-		super(compose.getId(), compose.getGroup(), compose.category(), compose.result, compose.getIngredients());
+		super(compose.getId(), compose.getGroup(), compose.category(), ((ShapelessRecipeAccessor) compose).getResult(), compose.getIngredients());
 		this.compose = compose;
 		REGISTERED_RECIPES.add(compose.getId());
 	}

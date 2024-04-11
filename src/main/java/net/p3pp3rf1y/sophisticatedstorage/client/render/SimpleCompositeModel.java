@@ -23,7 +23,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,6 +31,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.p3pp3rf1y.sophisticatedstorage.mixin.client.accessor.BlockModelAccessor;
+import net.p3pp3rf1y.sophisticatedstorage.mixin.client.accessor.SimpleBakedModelBuilderAccessor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,11 +96,11 @@ public class SimpleCompositeModel implements IUnbakedGeometry<SimpleCompositeMod
 	public Map<String, Either<Material, String>> getTextures() {
 		HashMap<String, Either<Material, String>> textures = new HashMap<>();
 		children.values().forEach(childModel -> {
-			childModel.textureMap.forEach(textures::putIfAbsent);
+			((BlockModelAccessor) childModel).getTextureMap().forEach(textures::putIfAbsent);
 			if (childModel.getCustomGeometry() instanceof SimpleCompositeModel compositeModel) {
 				compositeModel.getTextures().forEach(textures::putIfAbsent);
 			} else if (childModel.parent != null) {
-				childModel.parent.textureMap.forEach(textures::putIfAbsent);
+				((BlockModelAccessor) childModel.parent).getTextureMap().forEach(textures::putIfAbsent);
 			}
 		});
 
@@ -247,7 +248,7 @@ public class SimpleCompositeModel implements IUnbakedGeometry<SimpleCompositeMod
 			}
 
 			private void addLayer(List<BakedQuad> quads) {
-				var modelBuilder = new SimpleBakedModel.Builder(isAmbientOcclusion, isSideLit, isGui3d, transforms, overrides).particle(particle);
+				var modelBuilder = SimpleBakedModelBuilderAccessor.create(isAmbientOcclusion, isSideLit, isGui3d, transforms, overrides).particle(particle);
 				quads.forEach(modelBuilder::addUnculledFace);
 				children.add(modelBuilder.build());
 			}

@@ -47,7 +47,6 @@
         "sophisticatedstorage.mixins.json",
         "compat/sophisticatedstorage.litematica.mixins.json"
     ],
-    "accessWidener": "sophisticatedstorage.accesswidener",
     "depends": {
         "fabricloader": ">=${loader_version}",
         "fabric-api": ">=${fabric_version}",

@@ -1,5 +1,1 @@
 moduleDependency(project, [ "SophisticatedCore" ])
-
-loom {
-    accessWidenerPath = file ('src/main/resources/sophisticatedstorage.accesswidener')
-}

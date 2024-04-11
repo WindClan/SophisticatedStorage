@@ -23,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.p3pp3rf1y.sophisticatedstorage.SophisticatedStorage;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
+import net.p3pp3rf1y.sophisticatedstorage.mixin.client.accessor.BlockModelAccessor;
 
 import java.util.Collections;
 import java.util.EnumMap;
@@ -183,7 +184,7 @@ public abstract class BarrelDynamicModelBase<T extends BarrelDynamicModelBase<T>
 		}
 
 		if (model instanceof BlockModel blockModel) {
-			for (Either<Material, String> material : blockModel.textureMap.values()) {
+			for (Either<Material, String> material : ((BlockModelAccessor) blockModel).getTextureMap().values()) {
 				Optional<Material> mat = material.left();
 				if (mat.isPresent()) {
 					hash = 31 * hash + mat.get().hashCode();
@@ -192,7 +193,7 @@ public abstract class BarrelDynamicModelBase<T extends BarrelDynamicModelBase<T>
 		}
 
 		if (model instanceof CompositeElementsModel compositeElementsModel) {
-			for (Map.Entry<String, Either<Material, String>> entry : compositeElementsModel.textureMap.entrySet()) {
+			for (Map.Entry<String, Either<Material, String>> entry : ((BlockModelAccessor) compositeElementsModel).getTextureMap().entrySet()) {
 				hash = 31 * hash + entry.getKey().hashCode();
 				hash = 31 * hash + entry.getValue().hashCode();
 			}

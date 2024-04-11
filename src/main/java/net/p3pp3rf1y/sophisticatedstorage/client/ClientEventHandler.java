@@ -73,6 +73,7 @@ import net.p3pp3rf1y.sophisticatedstorage.common.gui.StorageContainerMenu;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModBlocks;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModItems;
 import net.p3pp3rf1y.sophisticatedstorage.item.StorageContentsTooltip;
+import net.p3pp3rf1y.sophisticatedstorage.mixin.client.accessor.MultiPlayerGameModeAccessor;
 import net.p3pp3rf1y.sophisticatedstorage.network.ScrolledToolMessage;
 import net.p3pp3rf1y.sophisticatedstorage.network.StoragePacketHandler;
 
@@ -178,7 +179,7 @@ public class ClientEventHandler {
 				return InteractionResult.SUCCESS;
 			} else {
 				if (player.getDestroySpeed(state) < 2) {
-					Minecraft.getInstance().gameMode.destroyDelay = 5;
+					((MultiPlayerGameModeAccessor) Minecraft.getInstance().gameMode).setDestroyDelay(5);
 					// Necessary cause fabrics version does stop the attack from happening
 					// and there is no full equivalent to forges event
 					state.getBlock().attack(state, level, pos, player);
