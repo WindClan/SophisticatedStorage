@@ -48,6 +48,10 @@ public class ChippedCompat implements ICompat {
 	public void init() {
 		this.registerContainers();
 
+		if (FabricLoader.getInstance().getEnvironmentType() != EnvType.CLIENT) {
+			return;
+		}
+
 		if (FabricLoader.getInstance().isModLoaded(CompatModIds.JEI)) {
 			StoragePlugin.setAdditionalCatalystRegistrar(registration -> {
 				registration.addRecipeCatalyst(new ItemStack(BOTANIST_WORKBENCH_UPGRADE), ChippedRecipeCategory.BOTANIST_WORKBENCH_RECIPE);
