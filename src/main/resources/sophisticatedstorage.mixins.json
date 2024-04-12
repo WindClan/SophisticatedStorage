@@ -5,7 +5,6 @@
     "package": "net.p3pp3rf1y.sophisticatedstorage.mixin",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
-        "client.accessor.MultiPlayerGameModeAccessor",
         "common.accessor.BarrelBlockEntityAccessor",
         "common.accessor.ChestBlockEntityAccessor",
         "common.accessor.ShapedRecipeAccessor",
@@ -17,6 +16,7 @@
         "client.accessor.BlockModelAccessor",
         "client.accessor.LevelRendererAccessor",
         "client.accessor.MinecraftAccessor",
+        "client.accessor.MultiPlayerGameModeAccessor",
         "client.accessor.SimpleBakedModelBuilderAccessor"
     ],
     "injectors": {
