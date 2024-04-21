@@ -244,7 +244,7 @@ public class CompressionInventoryPart implements IInventoryPartHandler {
 		}
 	}
 
-	Optional<RecipeHelper.UncompactingResult> getDecompressionResultFromConfig(Item currentItem) {
+	public Optional<RecipeHelper.UncompactingResult> getDecompressionResultFromConfig(Item currentItem) {
 		return Config.SERVER.compressionUpgrade.getDecompressionResult(currentItem);
 	}
 
@@ -612,7 +612,7 @@ public class CompressionInventoryPart implements IInventoryPartHandler {
 	}
 
 	@Override
-	public boolean isItemValid(int slot, ItemVariant resource) {
+	public boolean isItemValid(int slot, ItemVariant resource, int count) {
 		if (!slotDefinitions.containsKey(slot)) {
 			return true;
 		}
