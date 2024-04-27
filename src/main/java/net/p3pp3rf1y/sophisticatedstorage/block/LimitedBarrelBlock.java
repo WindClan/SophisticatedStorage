@@ -5,7 +5,6 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -222,9 +221,7 @@ public class LimitedBarrelBlock extends BarrelBlock {
 	}
 
 	private Optional<BlockHitResult> getHitResult(Player player) {
-		double d = Minecraft.getInstance().gameMode.getPickRange();
-		HitResult hitResult = player.pick(d, 0, false);
-		// HitResult hitResult = player.pick(player.getBlockReach(), 0, false);
+		HitResult hitResult = player.pick(player.isCreative() ? 5.0F : 4.5F, 0, false);
 		return hitResult instanceof BlockHitResult blockHitResult ? Optional.of(blockHitResult) : Optional.empty();
 	}
 
