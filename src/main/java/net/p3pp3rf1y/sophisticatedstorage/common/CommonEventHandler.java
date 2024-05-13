@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -37,7 +36,6 @@ import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockBase;
 import net.p3pp3rf1y.sophisticatedstorage.block.WoodStorageBlockEntity;
 import net.p3pp3rf1y.sophisticatedstorage.client.gui.StorageTranslationHelper;
 import net.p3pp3rf1y.sophisticatedstorage.init.ModItems;
-import net.p3pp3rf1y.sophisticatedstorage.mixin.client.accessor.MultiPlayerGameModeAccessor;
 import net.p3pp3rf1y.sophisticatedstorage.settings.StorageSettingsHandler;
 
 import javax.annotation.Nullable;
@@ -66,7 +64,6 @@ public class CommonEventHandler {
 			return InteractionResult.PASS;
 		}
 		if (limitedBarrel.tryToTakeItem(state, level, pos, player)) {
-			((MultiPlayerGameModeAccessor) Minecraft.getInstance().gameMode).setDestroyDelay(5);
 			return InteractionResult.SUCCESS;
 		}
 
