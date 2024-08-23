@@ -173,30 +173,42 @@ public class HopperUpgradeWrapper extends UpgradeWrapperBase<HopperUpgradeWrappe
 	}*/
 
 	private boolean pullItems(Storage<ItemVariant> fromHandler) {
-		return moveItems(fromHandler, storageWrapper.getInventoryForUpgradeProcessing(), inputFilterLogic);
+		try {
+			return moveItems(fromHandler, storageWrapper.getInventoryForUpgradeProcessing(), inputFilterLogic);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	private boolean pushItems(Storage<ItemVariant> toHandler) {
-		return moveItems(storageWrapper.getInventoryForUpgradeProcessing(), toHandler, outputFilterLogic);
+		try {
+			return moveItems(storageWrapper.getInventoryForUpgradeProcessing(), toHandler, outputFilterLogic);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	private boolean moveItems(Storage<ItemVariant> fromHandler, Storage<ItemVariant> toHandler, FilterLogic filterLogic) {
-		for (StorageView<ItemVariant> view : fromHandler.nonEmptyViews()) {
-			ItemVariant resource = view.getResource();
-			ItemStack slotStack = resource.toStack((int) view.getAmount());
-			if (!slotStack.isEmpty() && filterLogic.matchesFilter(slotStack)) {
-				long maxExtracted = StorageUtil.simulateExtract(view, resource, upgradeItem.getMaxTransferStackSize(), null);
+		try {
+			for (StorageView<ItemVariant> view : fromHandler.nonEmptyViews()) {
+				ItemVariant resource = view.getResource();
+				ItemStack slotStack = resource.toStack((int) view.getAmount());
+				if (!slotStack.isEmpty() && filterLogic.matchesFilter(slotStack)) {
+					long maxExtracted = StorageUtil.simulateExtract(view, resource, upgradeItem.getMaxTransferStackSize(), null);
 
-				try (Transaction transferTransaction = Transaction.openOuter()) {
-					long accepted = toHandler.insert(resource, maxExtracted, transferTransaction);
-					if (fromHandler.extract(resource, accepted, transferTransaction) == accepted) {
-						transferTransaction.commit();
-						return true;
+					try (Transaction transferTransaction = Transaction.openOuter()) {
+						long accepted = toHandler.insert(resource, maxExtracted, transferTransaction);
+						if (fromHandler.extract(resource, accepted, transferTransaction) == accepted) {
+							transferTransaction.commit();
+							return true;
+						}
 					}
 				}
 			}
+			return false;
+		} catch(Exception e) {
+			return false;
 		}
-		return false;
 	}
 
 	@Override
